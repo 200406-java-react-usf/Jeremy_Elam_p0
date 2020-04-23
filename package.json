@@ -1,32 +1,35 @@
 {
-  "name": "jeremy_elam_p0",
-  "version": "1.0.0",
-  "description": "social media for mtg players",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/200406-java-react-usf/Jeremy_Elam_p0.git"
-  },
-  "keywords": [
-    "Node",
-    "JS"
-  ],
-  "author": "Jeremy Elam",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/200406-java-react-usf/Jeremy_Elam_p0/issues"
-  },
-  "homepage": "https://github.com/200406-java-react-usf/Jeremy_Elam_p0#readme",
-  "devDependencies": {
-    "jest": "^25.4.0",
-    "typescript": "^3.8.3"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "pg": "^8.0.2",
-    "postgres": "^1.0.2"
-  }
+    "name": "jeremy_elam_p0",
+    "version": "1.0.0",
+    "description": "social media for mtg players",
+    "main": "./build/index.js",
+    "scripts": {
+        "start": "tsc && node ./build/index.js",
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/200406-java-react-usf/Jeremy_Elam_p0.git"
+    },
+    "keywords": [
+        "Node",
+        "JS"
+    ],
+    "author": "Jeremy Elam",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/200406-java-react-usf/Jeremy_Elam_p0/issues"
+    },
+    "homepage": "https://github.com/200406-java-react-usf/Jeremy_Elam_p0#readme",
+    "devDependencies": {
+        "@types/node": "^13.13.2",
+        "jest": "^25.4.0",
+        "ts-node": "^8.9.0",
+        "typescript": "^3.8.3"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "pg": "^8.0.2",
+        "postgres": "^1.0.2"
+    }
 }
