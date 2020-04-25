@@ -17,3 +17,9 @@ const isValidObject = (obj: Object, ...nullableProps: string[]) => {
 		return obj[key];
 	});
 };
+
+export default{
+	isValidId,
+	isValidStrings,
+	isValidObject
+};
