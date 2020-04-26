@@ -6,7 +6,8 @@ import {
 	AuthenticationError, 
 	ResourceNotFoundError, 
 	ResourcePersistenceError,
-	NotImplementedError
+	NotImplementedError 
+
 } from '../errors/errors';
 
 
