@@ -43,8 +43,8 @@ export class CardRepository implements CrudRepository<Cards>{
 					reject(new ResourceNotFoundError());
 					return;
 				}
-				resolve(card)
-			})
+				resolve(card);
+			});
 		});
 	}
 	save(newCard: Cards): Promise<Cards>{

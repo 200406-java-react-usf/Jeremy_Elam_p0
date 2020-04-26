@@ -47,11 +47,11 @@ describe('cardRepo', ()=>{
 		expect.assertions(3);
 		validator.isValidStrings = jest.fn().mockReturnValue(true);
 		//Act
-		let result = await sut.getInstance().getById('Domri something something')
+		let result = await sut.getInstance().getById('Domri something something');
 		//Assert
 		expect(result).toBeTruthy();
 		expect(result.card_name).toBe('Domri something something');
-		expect(result.card_rarity).toBe('Mythic')
+		expect(result.card_rarity).toBe('Mythic');
 	});
 
 	test('will invoke BadRequestError when an invalid card name is given', async() =>{
@@ -72,7 +72,7 @@ describe('cardRepo', ()=>{
 		validator.isValidStrings = jest.fn().mockReturnValue(true);
 		//Act
 		try{
-			await sut.getInstance().getById(`Blue Eye's White Dragon`);
+			await sut.getInstance().getById('Blue Eye\'s White Dragon');
 		}catch(e){
 			//Assert
 			expect(e instanceof ResourceNotFoundError).toBeTruthy();
