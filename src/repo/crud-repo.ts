@@ -3,5 +3,5 @@ export interface CrudRepository<T>{
     getById(id: number | string): Promise<T>;
     save(newObj: T): Promise<T>;
     update(updateObj: T):Promise<boolean>;
-    deleteById(id: number | string): Promise<boolean>;
+    deleteById(id: string | number): Promise<boolean>;
 }
