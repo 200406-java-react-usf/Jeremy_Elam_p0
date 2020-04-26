@@ -2,10 +2,11 @@ import data from '../data/user-db';
 import { UserInfo } from '../models/user';
 import { CrudRepository } from './crud-repo';
 import {  
-	DataNotFoundError,
-	DataNotStoredError,
-	AuthenticationError,
-	InvalidRequestError
+	ResourceNotFoundError,
+    ResourcePersistenceError,
+    BadRequestError,
+    AuthenticationError,
+    NotImplementedError
 } from '../errors/errors';
 import validator from '../util/validator';
 
@@ -24,7 +25,7 @@ export class UserRepository implements CrudRepository<UserInfo> {
 					users.push({...user});
 				}
 				if(users.length == 0){
-					reject(new InvalidRequestError());
+					reject(new ResourceNotFoundError());
 					return;
 				}
 				resolve(users.map(this.removePassword));
@@ -34,12 +35,12 @@ export class UserRepository implements CrudRepository<UserInfo> {
 	getById(id:number): Promise<UserInfo>{
 		return new Promise<UserInfo>((resolve,reject) =>{
 			if(!validator.isValidId(id)){
-				reject(new InvalidRequestError());
+				reject(new BadRequestError());
 			}
 			setTimeout(() =>{
-				const user = {...data.find(user => user.user_id === id)};
+				const user = {...data.find(user => user.id === id)};
 				if(Object.keys(user).length === 0){
-					reject(new DataNotFoundError());
+					reject(new ResourceNotFoundError());
 					return;
 				}
 				resolve(this.removePassword(user));
@@ -50,16 +51,16 @@ export class UserRepository implements CrudRepository<UserInfo> {
 	save(newUser: UserInfo): Promise<UserInfo>{
 		return new Promise<UserInfo>((resolve, reject) =>{
 			if(!validator.isValidObject(newUser, 'user_id')){
-				reject(new InvalidRequestError('Invalid property values found in provided user.'));
+				reject(new BadRequestError('Invalid property values found in provided user.'));
 				return;
 			}
 			setTimeout(()=>{
 				let conflict = data.filter( user => user.user_email == newUser.user_email).pop();
 				if(conflict){
-					reject(new InvalidRequestError('The provided email address is already taken'));
+					reject(new ResourcePersistenceError('The provided email address is already taken'));
 					return;
 				}
-				newUser.user_id = (data.length)+1;
+				newUser.id = (data.length)+1;
 				data.push(newUser);
 				resolve(this.removePassword(newUser));
 			});
@@ -67,37 +68,39 @@ export class UserRepository implements CrudRepository<UserInfo> {
 
 
 	}
-	update(updatedUser: UserInfo): Promise<boolean>{
-		return new Promise<boolean>((resolve, reject)=>{
-			if(!validator.isValidObject(updatedUser)){
-				reject(new InvalidRequestError('Invalid user provided (invalid values found).'));
-				return;
-			}
-			setTimeout(() =>{
-				let persistedUser = data.find(user => user.user_id === updatedUser.user_id);
-				if(!persistedUser){
-					reject(new AuthenticationError('No user found with id'));
-					return
-				}
-				const conflict = data.filter(user =>{
-					if(user.user_id== updatedUser.user_id) return false;
-					return user.user_email == updatedUser.user_email;
-				});
-				if(conflict){
-					reject(new AuthenticationError('Provided email is taken by another user.'));
-					return;
-				}
-				persistedUser = updatedUser;
-				resolve(true);
-			});
-		});
-	}
+
+	update(updatedUser: UserInfo): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            if (!validator.isValidObject(updatedUser)) {
+                reject(new BadRequestError('Invalid user provided (invalid values found).'));
+                return;
+            }
+            setTimeout(() => {
+                let persistedUser = data.find(user => user.id === updatedUser.id);
+                if (!persistedUser) {
+                    reject(new ResourceNotFoundError('No user found with provided id.'));
+                    return;
+                }
+                const conflict = data.filter(user => {
+                    if (user.id == updatedUser.id) return false;
+                    return user.user_email == updatedUser.user_email; 
+                }).pop();
+                if (conflict) {
+                    reject(new ResourcePersistenceError('Provided email is taken by another user.'));
+                    return;
+                }
+                persistedUser = updatedUser;
+                resolve(true);
+            });
+        });
+    
+    }
 	deleteById(id:number): Promise<boolean>{
 		return new Promise<boolean>((resolve, rejects)=>{
 			if(!validator.isValidId){
-				rejects(new InvalidRequestError('Invalid id number was provided'));
+				rejects(new BadRequestError('Invalid id number was provided'));
 			}
-			rejects(new DataNotStoredError());
+			rejects(new NotImplementedError());
 		});
 	}
 	private removePassword(user: UserInfo): UserInfo {
