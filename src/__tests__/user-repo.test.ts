@@ -7,7 +7,6 @@ import {
     ResourceNotFoundError, 
     ResourcePersistenceError 
 } from '../errors/errors';
-import { createCipher } from 'crypto';
 
 
 describe('userRepo', () =>{
