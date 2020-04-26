@@ -1,5 +1,5 @@
 export class UserInfo {
-	user_id: number;
+	id: number;
 	user_fn: string;
 	user_ln: string;
 	user_email: string;
@@ -7,7 +7,7 @@ export class UserInfo {
 	user_dob: Date;
 
 	constructor (us_id:number, fn:string, ln:string, email:string, pw:string, dob:Date){
-		this.user_id = us_id;
+		this.id = us_id;
 		this.user_fn = fn;
 		this.user_ln = ln;
 		this.user_email = email;
