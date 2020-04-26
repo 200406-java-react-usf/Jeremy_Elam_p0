@@ -32,9 +32,19 @@ export class CardRepository implements CrudRepository<Cards>{
 			});
 		});
 	}
-	getById(): Promise<Cards>{
+	getById(name: string): Promise<Cards>{
 		return new Promise<Cards>((resolve,reject)=>{
-			reject(new ResourceNotFoundError());
+			if(!validator.isValidStrings(name)){
+				reject(new BadRequestError());
+			}
+			setTimeout(()=>{
+				const card = {...data.find(card => card.card_name === name)};
+				if(Object.keys(card).length === 0){
+					reject(new ResourceNotFoundError());
+					return;
+				}
+				resolve(card)
+			})
 		});
 	}
 	save(newCard: Cards): Promise<Cards>{
