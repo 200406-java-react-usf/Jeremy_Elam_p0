@@ -60,7 +60,7 @@ describe('userRepo', () =>{
 		expect.assertions(3);
 		validator.isValidId = jest.fn().mockReturnValue(true);
 
-		// Assert
+		// Act
 		let result = await sut.getInstance().getById(1);
 
 		//Assert
@@ -69,11 +69,45 @@ describe('userRepo', () =>{
 		expect(result.user_pw).toBeUndefined();
 	});
 
-	test('should return true if the user was updated', ()=>{
-		//Arrange 
-		validator.isValidId = jest.fn().mockReturnValue(true);
+	test('should return new user information without password', async ()=>{
+		//Arrange
+		expect.assertions(3);
+		validator.isValidObject = jest.fn().mockReturnValue(true);
+		//Act
+		let validMockUser = new UserInfo(6,'Pepper', 'Elam','pepper@gmail.com','password',new Date('10/15/2018'));
+		let result = await sut.getInstance().save(validMockUser);
 		//Assert 
-		let result = await sut.getInstance().update(
+		expect(result).toBeTruthy();
+		expect(result.user_id).toBe(6);
+		expect(result.user_pw).toBeUndefined();
+	});
+
+	test('should return InvalidRequestError when invalid user is given', async () =>{
+		//Arrange
+		expect.assertions(1);
+		validator.isValidObject = jest.fn().mockReturnValue(false);
+		//Act 
+		let invalidMockUser = new UserInfo(6,'', 'Elam','pepper@gmail.com','',new Date('10/15/2018'));
+		try{
+			await sut.getInstance().save(invalidMockUser);
+		}catch(e){
+			//Assert
+			expect(e instanceof InvalidRequestError).toBeTruthy();
+		}
+	})
+
+	test('will return InvalidRequestError when new users tries to user an already existing email address', async () => {
+		//Arrange
+		expect.assertions(1);
+		validator.isValidObject = jest.fn().mockReturnValue(true);
+		//Act
+		let invalidMockUser = new UserInfo(6,'Pepper', 'Elam','jeremyelam@gmail.com','password',new Date('10/15/2018'));
+		try{
+			await sut.getInstance().save(invalidMockUser);
+		}catch(e){
+			//Assert
+			expect(e instanceof InvalidRequestError).toBeTruthy();
+		}
 	})
 
 });
