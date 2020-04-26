@@ -42,7 +42,7 @@ describe('userRepo', () =>{
 		expect(result[0].user_pw).toBeUndefined();
 	});
 
-	test('should throw InvalidRequestError when ', async()=>{
+	test('should throw InvalidRequestError when given invalid user id', async()=>{
 		// Arrange
 		expect.assertions(1);
 		validator.isValidId = jest.fn().mockReturnValue(false);
@@ -52,6 +52,18 @@ describe('userRepo', () =>{
 		}catch (e){
 			// Assert
 			expect(e instanceof  InvalidRequestError).toBeTruthy();
+		}
+	});
+
+	test('should throw DataNotFoundError when id is out of range of current database',async ()=>{
+		//Arrange
+		expect.assertions(1);
+		validator.isValidId = jest.fn().mockReturnValue(true);
+		try{
+			await sut.getInstance().getById(55);
+		}catch(e){
+			//Assert
+			expect(e instanceof DataNotFoundError).toBeTruthy();
 		}
 	});
 
