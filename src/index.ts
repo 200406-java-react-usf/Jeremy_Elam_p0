@@ -1,5 +1,7 @@
 import { UserRepository } from './repo/user-repo';
+import {CardRepository} from './repo/card-repo';
 import { UserInfo } from './models/user';
+
 
 let invalidMockUser = new UserInfo(99999, 'update','update','update','update', new Date());
 (async () =>{
@@ -16,4 +18,12 @@ let invalidMockUser = new UserInfo(99999, 'update','update','update','update', n
 	
 })();
 
+(async()=>{
+	try{
+		let testing = await CardRepository.getInstance().getById('Domri something something')
+		console.log(testing);
+	}catch(e){
+		console.log(e);
+	}
+})();
 
