@@ -1,48 +1,68 @@
-class ApplicationError{
-	message : string;
-	reason: string;
+class ApplicationError {
 
-	constructor(reason?: string){
-		this.message = 'An unexpected error has occurred.';
-		reason ? (this.reason = reason) : this.reason = 'Unknown reason';
-	}
+    message: string;
+    reason: string;
 
-	setMessage(message:string){
-		this.message = message;
-	}
+    constructor(rsn?: string) {
+        this.message = 'An unexpected error occurred.';
+        rsn ? (this.reason = rsn) : this.reason = 'Unspecified reason.';
+    }
+
+    setMessage(message: string) {
+        this.message = message;
+    }
+
 }
 
-class DataNotFoundError extends ApplicationError{
-	constructor(reason?: string){
-		super(reason);
-		super.setMessage('Error: No data was found');
-	}
+class ResourcePersistenceError extends ApplicationError {
+
+    constructor(reason?: string) {
+        super(reason);
+        super.setMessage('The resource was not persisted.');
+    }
+    
 }
 
-class InvalidRequestError extends ApplicationError{
-	constructor(reason?: string){
-		super(reason);
-		super.setMessage('Error: Invalid Request');
-	}
+class ResourceNotFoundError extends ApplicationError {
+
+    constructor(reason?: string) {
+        super(reason);
+        super.setMessage('No resource found using provided criteria.');
+    }
+    
 }
 
-class AuthenticationError extends ApplicationError{
-	constructor(reason?: string){
-		super(reason);
-		super.setMessage('Error: Authentication Failed');
-	}
+class BadRequestError extends ApplicationError {
+
+    constructor(reason?: string) {
+        super(reason);
+        super.setMessage('Invalid parameters provided.');
+    }
+
 }
 
-class DataNotStoredError extends ApplicationError{
-	constructor(reason?: string){
-		super(reason);
-		super.setMessage('Error: The data has not been stored');
-	}
+class AuthenticationError extends ApplicationError {
+
+    constructor(reason?: string) {
+        super(reason);
+        super.setMessage('Authentication failed.');
+    }
+
 }
 
-export{
-	DataNotFoundError,
-	DataNotStoredError,
-	AuthenticationError,
-	InvalidRequestError
+class NotImplementedError extends ApplicationError {
+
+    constructor(reason?: string) {
+        super(reason);
+        super.setMessage('No implementation yet!');
+    }
+
+}
+
+export {
+    ResourceNotFoundError,
+    ResourcePersistenceError,
+    BadRequestError,
+    AuthenticationError,
+    NotImplementedError
 };
