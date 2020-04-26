@@ -39,7 +39,7 @@ describe('cardRepo', ()=>{
 		let result = await sut.getInstance().getAll();
 		//Assert
 		expect(result).toBeTruthy();
-		expect(result[0].card_name).toBe('Domri something something')
+		expect(result[0].card_name).toBe('Domri something something');
 	});
 	
-})
+});
