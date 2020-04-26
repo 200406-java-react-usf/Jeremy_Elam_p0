@@ -5,7 +5,6 @@ export class UserProfile {
 	fav_colors: object;
 	fav_card: string;
 	location: string;
-
 	constructor (un:string, id:number, archetype: string, color: object, card: string, location: string){
 		this.user_un = un;
 		this.id =id;

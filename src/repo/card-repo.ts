@@ -3,10 +3,10 @@ import { Cards } from '../models/cards';
 import {CrudRepository} from './crud-repo';
 import validator from '../util/validator';
 import {  
-	DataNotFoundError,
-	DataNotStoredError,
-	AuthenticationError,
-	InvalidRequestError
+	BadRequestError, 
+	AuthenticationError, 
+	ResourceNotFoundError, 
+	ResourcePersistenceError 
 } from '../errors/errors';
 
 // export class CardRepository implements CrudRepository<Cards>{

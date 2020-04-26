@@ -3,9 +3,9 @@ import { UserInfo } from '../models/user';
 import validator from '../util/validator';
 import {  
 	BadRequestError, 
-    AuthenticationError, 
-    ResourceNotFoundError, 
-    ResourcePersistenceError 
+	AuthenticationError, 
+	ResourceNotFoundError, 
+	ResourcePersistenceError 
 } from '../errors/errors';
 
 
@@ -283,6 +283,6 @@ describe('userRepo', () =>{
 			//Assert
 			expect(e instanceof ResourcePersistenceError).toBeTruthy();
 		}
-	})
+	});
 
 });

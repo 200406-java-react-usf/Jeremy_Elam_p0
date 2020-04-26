@@ -3,10 +3,10 @@ import { UserInfo } from '../models/user';
 import { CrudRepository } from './crud-repo';
 import {  
 	ResourceNotFoundError,
-    ResourcePersistenceError,
-    BadRequestError,
-    AuthenticationError,
-    NotImplementedError
+	ResourcePersistenceError,
+	BadRequestError,
+	AuthenticationError,
+	NotImplementedError
 } from '../errors/errors';
 import validator from '../util/validator';
 
@@ -70,31 +70,31 @@ export class UserRepository implements CrudRepository<UserInfo> {
 	}
 
 	update(updatedUser: UserInfo): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            if (!validator.isValidObject(updatedUser)) {
-                reject(new BadRequestError('Invalid user provided (invalid values found).'));
-                return;
-            }
-            setTimeout(() => {
-                let persistedUser = data.find(user => user.id === updatedUser.id);
-                if (!persistedUser) {
-                    reject(new ResourceNotFoundError('No user found with provided id.'));
-                    return;
-                }
-                const conflict = data.filter(user => {
-                    if (user.id == updatedUser.id) return false;
-                    return user.user_email == updatedUser.user_email; 
-                }).pop();
-                if (conflict) {
-                    reject(new ResourcePersistenceError('Provided email is taken by another user.'));
-                    return;
-                }
-                persistedUser = updatedUser;
-                resolve(true);
-            });
-        });
+		return new Promise<boolean>((resolve, reject) => {
+			if (!validator.isValidObject(updatedUser)) {
+				reject(new BadRequestError('Invalid user provided (invalid values found).'));
+				return;
+			}
+			setTimeout(() => {
+				let persistedUser = data.find(user => user.id === updatedUser.id);
+				if (!persistedUser) {
+					reject(new ResourceNotFoundError('No user found with provided id.'));
+					return;
+				}
+				const conflict = data.filter(user => {
+					if (user.id == updatedUser.id) return false;
+					return user.user_email == updatedUser.user_email; 
+				}).pop();
+				if (conflict) {
+					reject(new ResourcePersistenceError('Provided email is taken by another user.'));
+					return;
+				}
+				persistedUser = updatedUser;
+				resolve(true);
+			});
+		});
     
-    }
+	}
 	deleteById(id:number): Promise<boolean>{
 		return new Promise<boolean>((resolve, rejects)=>{
 			if(!validator.isValidId){
