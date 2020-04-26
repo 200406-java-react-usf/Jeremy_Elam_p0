@@ -207,7 +207,7 @@ describe('userRepo', () =>{
 		validator.isValidObject = jest.fn().mockReturnValue(true);
 		validator.isValidId = jest.fn().mockReturnValue(true);
 		//Act
-		let validMockUser = new UserInfo(1, 'update','update','update','update',null)
+		let validMockUser = new UserInfo(1, 'update','update','update','update',null);
 		let result = sut.getInstance().update(validMockUser);
 		//Assert
 		expect(result).toBeTruthy();
@@ -220,13 +220,13 @@ describe('userRepo', () =>{
 		validator.isValidId = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			let invalidMockUser = new UserInfo(9999, 'update','update','update','update',null)
+			let invalidMockUser = new UserInfo(9999, 'update','update','update','update',null);
 			await sut.getInstance().update(invalidMockUser);
 		}catch(e){
 			//Assert
 			expect(e instanceof InvalidRequestError).toBeTruthy();
 		}
-	})
+	});
 
 	test('will invoke InvalidRequestError when given an invalid id (double)', async ()=>{
 		//Arrange
@@ -235,13 +235,13 @@ describe('userRepo', () =>{
 		validator.isValidId = jest.fn().mockReturnValue(false);
 		//Act
 		try {
-			let invalidMockUser = new UserInfo(3.5, 'update','update','update','update',null)
+			let invalidMockUser = new UserInfo(3.5, 'update','update','update','update',null);
 			//Assert
 			await sut.getInstance().update(invalidMockUser);
 		}catch(e){
 			expect(e instanceof InvalidRequestError).toBeTruthy();
 		}
-	})
+	});
 	test('will invoke InvalidRequestError when given an invalid id (negative)', async ()=>{
 		//Arrange
 		expect.assertions(1);
@@ -249,12 +249,12 @@ describe('userRepo', () =>{
 		validator.isValidId = jest.fn().mockReturnValue(false);
 		//Act
 		try {
-			let invalidMockUser = new UserInfo(-1, 'update','update','update','update',null)
+			let invalidMockUser = new UserInfo(-1, 'update','update','update','update',null);
 			//Assert
 			await sut.getInstance().update(invalidMockUser);
 		}catch(e){
 			expect(e instanceof InvalidRequestError).toBeTruthy();
 		}
-	})
+	});
 
 });
