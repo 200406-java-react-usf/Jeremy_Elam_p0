@@ -75,27 +75,27 @@ export class UserRepository implements CrudRepository<UserInfo> {
 	update(updatedUser: UserInfo): Promise<boolean>{
 		return new Promise<boolean>((resolve, reject)=>{
 			if(!validator.isValidObject(updatedUser) || !validator.isValidId(updatedUser.user_id)){
-			reject(new InvalidRequestError('Invalid user provided (invalid values found).'));
-			return;
+				reject(new InvalidRequestError('Invalid user provided (invalid values found).'));
+				return;
 			}
 			setTimeout(() =>{
 				let persistedUser = data.find(user => user.user_id === updatedUser.user_id);
 				if(!persistedUser){
-					reject(new InvalidRequestError('No user found with id'))
+					reject(new InvalidRequestError('No user found with id'));
 				}
 
 				const conflict = data.filter(user =>{
 					if(user.user_id== updatedUser.user_id) return false;
 					return user.user_email == updatedUser.user_email;
-				})
+				});
 
 				if(conflict){
-					reject(new InvalidRequestError("Provided email is taken by another user."));
+					reject(new InvalidRequestError('Provided email is taken by another user.'));
 					return;
 				}
 				persistedUser = updatedUser;
 				resolve(true);
-			})
+			});
 		});
 
 	}
@@ -103,7 +103,7 @@ export class UserRepository implements CrudRepository<UserInfo> {
 	deleteById(id:number): Promise<boolean>{
 		return new Promise<boolean>((resolve, rejects)=>{
 			if(!validator.isValidId){
-				rejects(new InvalidRequestError("Invalid id number was provided"))
+				rejects(new InvalidRequestError('Invalid id number was provided'));
 			}
 			rejects(new DataNotStoredError());
 		});

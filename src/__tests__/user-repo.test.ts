@@ -94,7 +94,7 @@ describe('userRepo', () =>{
 			//Assert
 			expect(e instanceof InvalidRequestError).toBeTruthy();
 		}
-	})
+	});
 
 	test('will return InvalidRequestError when new users tries to user an already existing email address', async () => {
 		//Arrange
@@ -108,6 +108,6 @@ describe('userRepo', () =>{
 			//Assert
 			expect(e instanceof InvalidRequestError).toBeTruthy();
 		}
-	})
+	});
 
 });
