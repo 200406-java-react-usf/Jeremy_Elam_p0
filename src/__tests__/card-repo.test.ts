@@ -42,4 +42,40 @@ describe('cardRepo', ()=>{
 		expect(result[0].card_name).toBe('Domri something something');
 	});
 	
+	test('should give card information when card name is given', async ()=>{
+		//Arrange
+		expect.assertions(3);
+		validator.isValidStrings = jest.fn().mockReturnValue(true);
+		//Act
+		let result = await sut.getInstance().getById('Domri something something')
+		//Assert
+		expect(result).toBeTruthy();
+		expect(result.card_name).toBe('Domri something something');
+		expect(result.card_rarity).toBe('Mythic')
+	});
+
+	test('will invoke BadRequestError when an invalid card name is given', async() =>{
+		//Arrange
+		expect.assertions(1);
+		validator.isValidStrings = jest.fn().mockReturnValue(false);
+		//Act
+		try{
+			await sut.getInstance().getById('6');
+		}catch(e){
+			//Assert
+			expect(e instanceof BadRequestError).toBeTruthy();
+		}
+	});
+	test('will invoke ResourceNotFoundError when given a name but not in database', async() =>{
+		//Arrange
+		expect.assertions(1);
+		validator.isValidStrings = jest.fn().mockReturnValue(true);
+		//Act
+		try{
+			await sut.getInstance().getById(`Blue Eye's White Dragon`);
+		}catch(e){
+			//Assert
+			expect(e instanceof ResourceNotFoundError).toBeTruthy();
+		}
+	});
 });
