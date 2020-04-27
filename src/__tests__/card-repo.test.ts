@@ -191,24 +191,24 @@ describe('cardRepo', ()=>{
 		//Arrange
 		expect.assertions(1);
 		validator.isCardValidObject = jest.fn().mockReturnValue(false);
-		let invalidMockUser = new Cards("Elspeth something something", "", "Primordial",400.00);
+		let invalidMockUser = new Cards('Elspeth something something', '', 'Primordial',400.00);
 		//Act
 		try{
 			await sut.getInstance().update(invalidMockUser);
 		}catch(e){
-			expect(e instanceof BadRequestError).toBeTruthy()
+			expect(e instanceof BadRequestError).toBeTruthy();
 		}
 	});
 	test('will invoke ResourceNotFoundError when user provides card object with invalid card name', async ()=>{
 		//Arrange
 		expect.assertions(1);
 		validator.isCardValidObject = jest.fn().mockReturnValue(true);
-		let invalidMockUser = new Cards("Elspeth", "update", "Primordial",400.00);
+		let invalidMockUser = new Cards('Elspeth', 'update', 'Primordial',400.00);
 		try{
 			await sut.getInstance().update(invalidMockUser);
 		}catch(e){
 			//Assert
 			expect(e instanceof ResourceNotFoundError).toBeTruthy();
 		}
-	})
+	});
 });
