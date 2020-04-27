@@ -16,15 +16,20 @@ const isValidObject = (obj: Object, ...nullableProps: string[]) => {
 
 const isCardValidObject = (obj: Object, ...nullableProps: string[]) => {
 	return obj && Object.keys(obj).every(key => {
+		if(key == 'card_price') return isValidPrice(obj['card_price']);
 		if (key == 'card_name') return isValidStrings(obj['card_name']);
 		if (nullableProps.includes(key)) return true;
 		return obj[key];
 	});
+};
+const isValidPrice = (price: number): boolean =>{
+	return(price && typeof price === 'number' && price > 0);
 };
 
 export default{
 	isValidId,
 	isValidStrings,
 	isValidObject,
-	isCardValidObject
+	isCardValidObject,
+	isValidPrice
 };
