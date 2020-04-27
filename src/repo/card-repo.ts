@@ -74,12 +74,12 @@ export class CardRepository implements CrudRepository<Cards>{
 			setTimeout(()=>{
 				let persistedCard = data.find(card => card.card_name === updateCard.card_name);
 				if(!persistedCard){
-					reject(new ResourceNotFoundError('No user found with provided id.'))
+					reject(new ResourceNotFoundError('No user found with provided id.'));
 					return;
 				}
 				persistedCard = updateCard;
 				resolve(true);
-			})
+			});
 		});
 	}
 	deleteById(name:string): Promise<boolean>{

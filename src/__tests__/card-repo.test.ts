@@ -72,7 +72,7 @@ describe('cardRepo', ()=>{
 		validator.isValidStrings = jest.fn().mockReturnValue(true);
 		//Act
 		try{
-			await sut.getInstance().getById(`Blue Eye's White Dragon`);
+			await sut.getInstance().getById('Blue Eye\'s White Dragon');
 		}catch(e){
 			//Assert
 			expect(e instanceof ResourceNotFoundError).toBeTruthy();
@@ -84,7 +84,7 @@ describe('cardRepo', ()=>{
 		expect.assertions(3);
 		validator.isCardValidObject = jest.fn().mockReturnValue(true);
 		//Act
-		let validMockUser = new Cards("Pepper the Great", "IDK", "Primordial",400.00);
+		let validMockUser = new Cards('Pepper the Great', 'IDK', 'Primordial',400.00);
 		let result = await sut.getInstance().save(validMockUser);
 		//Assert
 		expect(result).toBeTruthy();
@@ -96,7 +96,7 @@ describe('cardRepo', ()=>{
 		//Arrange
 		expect.assertions(1);
 		validator.isCardValidObject = jest.fn().mockReturnValue(false);
-		let invalidMockUser = new Cards("", "IDK", "Primordial",400.00);
+		let invalidMockUser = new Cards('', 'IDK', 'Primordial',400.00);
 
 		//Act
 		try{
@@ -105,12 +105,12 @@ describe('cardRepo', ()=>{
 			//Assert
 			expect(e instanceof BadRequestError).toBeTruthy();
 		}
-	})
+	});
 	test('will invoke BadRequestError when object contains invalid set name', async()=>{
 		//Arrange
 		expect.assertions(1);
 		validator.isCardValidObject = jest.fn().mockReturnValue(false);
-		let invalidMockUser = new Cards("Pepper the Great", "", "Primordial",400.00);
+		let invalidMockUser = new Cards('Pepper the Great', '', 'Primordial',400.00);
 
 		//Act
 		try{
@@ -119,12 +119,12 @@ describe('cardRepo', ()=>{
 			//Assert
 			expect(e instanceof BadRequestError).toBeTruthy();
 		}
-	})
+	});
 	test('will invoke BadRequestError when object contains invalid rarity', async()=>{
 		//Arrange
 		expect.assertions(1);
 		validator.isCardValidObject = jest.fn().mockReturnValue(false);
-		let invalidMockUser = new Cards("Pepper the Great", "IDK", "",400.85);
+		let invalidMockUser = new Cards('Pepper the Great', 'IDK', '',400.85);
 
 		//Act
 		try{
@@ -133,12 +133,12 @@ describe('cardRepo', ()=>{
 			//Assert
 			expect(e instanceof BadRequestError).toBeTruthy();
 		}
-	})
+	});
 	test('will invoke BadRequestError when object contains invalid price', async()=>{
 		//Arrange
 		expect.assertions(1);
 		validator.isCardValidObject = jest.fn().mockReturnValue(false);
-		let invalidMockUser = new Cards("Pepper the Great", "IDK", "",NaN);
+		let invalidMockUser = new Cards('Pepper the Great', 'IDK', '',NaN);
 
 		//Act
 		try{
@@ -154,9 +154,9 @@ describe('cardRepo', ()=>{
 		validator.isCardValidObject = jest.fn().mockReturnValue(false);
 	
 		//Act
-		let invalidMockUser = new Cards("Pepper the Great", "IDK", "Primordial",-400.00);
+		let invalidMockUser = new Cards('Pepper the Great', 'IDK', 'Primordial',-400.00);
 		try{
-			await sut.getInstance().save(invalidMockUser)
+			await sut.getInstance().save(invalidMockUser);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBeTruthy();
@@ -168,9 +168,9 @@ describe('cardRepo', ()=>{
 		validator.isCardValidObject = jest.fn().mockReturnValue(true);
 	
 		//Act
-		let invalidMockUser = new Cards("Elspeth something something", "IDK", "Primordial",400.00);
+		let invalidMockUser = new Cards('Elspeth something something', 'IDK', 'Primordial',400.00);
 		try{
-			await sut.getInstance().save(invalidMockUser)
+			await sut.getInstance().save(invalidMockUser);
 		}catch(e){
 			//Assert
 			expect(e instanceof ResourcePersistenceError).toBeTruthy();
@@ -185,5 +185,5 @@ describe('cardRepo', ()=>{
 		let result = sut.getInstance().update(validMockUser);
 		//Assert
 		expect(result).toBeTruthy();
-	})
+	});
 });
