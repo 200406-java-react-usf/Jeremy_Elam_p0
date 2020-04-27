@@ -77,14 +77,6 @@ export class CardRepository implements CrudRepository<Cards>{
 					reject(new ResourceNotFoundError('No user found with provided id.'))
 					return;
 				}
-				const conflict = data.filter(card =>{
-					if(card.card_name == updateCard.card_name) return false;
-					return card.card_name == updateCard.card_name;
-				}).pop();
-				if(conflict){
-					reject(new ResourcePersistenceError("Provided card name is already taken by another card"));
-					return;
-				}
 				persistedCard = updateCard;
 				resolve(true);
 			})
