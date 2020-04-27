@@ -9,7 +9,7 @@ import {
 	ResourcePersistenceError,
 	NotImplementedError 
 } from '../errors/errors';
-import { UserRepository } from './user-repo';
+import userDb from '../data/user-db';
 
 export class CardRepository implements CrudRepository<Cards>{
 	private static instance: CardRepository;
@@ -49,12 +49,40 @@ export class CardRepository implements CrudRepository<Cards>{
 	}
 	save(newCard: Cards): Promise<Cards>{
 		return new Promise<Cards>((resolve, reject) =>{
-			reject(new ResourceNotFoundError());
+			if(!validator.isCardValidObject(newCard, 'card_name')){
+				reject(new BadRequestError('Invalid property values found in provided card.'));
+				return;
+			}
+			setTimeout(()=>{
+				let conflict = data.filter(card => card.card_name == newCard.card_name).pop();
+				if(conflict){
+					reject(new ResourcePersistenceError('The provided card name is already being used'));
+					return;
+				}
+
+				data.push(newCard);
+				resolve(newCard);
+			});
 		});
 	}
 	update(updateCard: Cards): Promise<boolean>{
 		return new Promise<boolean>((resolve, reject)=>{
-			reject(new ResourceNotFoundError());
+			if(!validator.isCardValidObject(updateCard)){
+				reject(new BadRequestError('Invalid card provided (invalid values found).'));
+				return;
+			}
+			setTimeout(()=>{
+				let persistedCard = data.find(card => card.card_name === updateCard.card_name);
+				if(!persistedCard){
+					reject(new ResourceNotFoundError('No user found with provided id.'))
+					return;
+				}
+				const conflict = data.filter(card =>{
+					if(card.card_name == updateCard.card_name) return false;
+					return card.card_name
+				})
+
+			})
 		});
 	}
 	deleteById(name:string): Promise<boolean>{
