@@ -31,7 +31,7 @@ let invalidMockUser = new UserInfo(99999, 'update','update','update','update', n
 // })();
 
 (async()=>{
-	let invalidMockUser = new Cards("Elspeth something something", "IDK", "Primordial",400.00);
+	let invalidMockUser = new Cards("Elspeth", "update", "Primordial",400.00);
 
 	try{
 		let testing = await CardRepository.getInstance().update(invalidMockUser);
