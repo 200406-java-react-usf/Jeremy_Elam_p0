@@ -6,7 +6,7 @@ import {
 	AuthenticationError, 
 	ResourceNotFoundError, 
 	ResourcePersistenceError,
-	NotImplementedError 
+	NotImplementedError
 } from '../errors/errors';
 
 describe('cardRepo', ()=>{
@@ -42,7 +42,7 @@ describe('cardRepo', ()=>{
 		expect(result[0].card_name).toBe('Domri something something');
 	});
 	
-	test('should give card information when card name is given', async ()=>{
+	test('should give card information when valid card name is given', async ()=>{
 		//Arrange
 		expect.assertions(3);
 		validator.isValidStrings = jest.fn().mockReturnValue(true);
@@ -72,10 +72,111 @@ describe('cardRepo', ()=>{
 		validator.isValidStrings = jest.fn().mockReturnValue(true);
 		//Act
 		try{
-			await sut.getInstance().getById('Blue Eye\'s White Dragon');
+			await sut.getInstance().getById(`Blue Eye's White Dragon`);
 		}catch(e){
 			//Assert
 			expect(e instanceof ResourceNotFoundError).toBeTruthy();
 		}
 	});
+
+	test('will insert new card into database when given valid card object', async()=>{
+		//Arrange
+		expect.assertions(3);
+		validator.isCardValidObject = jest.fn().mockReturnValue(true);
+		//Act
+		let validMockUser = new Cards("Pepper the Great", "IDK", "Primordial",400.00);
+		let result = await sut.getInstance().save(validMockUser);
+		//Assert
+		expect(result).toBeTruthy();
+		expect(result.card_name).toBe('Pepper the Great');
+		expect(result.card_rarity).toBe('Primordial');
+	});
+
+	test('will invoke BadRequestError when object contains invalid card name', async()=>{
+		//Arrange
+		expect.assertions(1);
+		validator.isCardValidObject = jest.fn().mockReturnValue(false);
+		let invalidMockUser = new Cards("", "IDK", "Primordial",400.00);
+
+		//Act
+		try{
+			await sut.getInstance().save(invalidMockUser);
+		}catch(e){
+			//Assert
+			expect(e instanceof BadRequestError).toBeTruthy();
+		}
+	})
+	test('will invoke BadRequestError when object contains invalid set name', async()=>{
+		//Arrange
+		expect.assertions(1);
+		validator.isCardValidObject = jest.fn().mockReturnValue(false);
+		let invalidMockUser = new Cards("Pepper the Great", "", "Primordial",400.00);
+
+		//Act
+		try{
+			await sut.getInstance().save(invalidMockUser);
+		}catch(e){
+			//Assert
+			expect(e instanceof BadRequestError).toBeTruthy();
+		}
+	})
+	test('will invoke BadRequestError when object contains invalid rarity', async()=>{
+		//Arrange
+		expect.assertions(1);
+		validator.isCardValidObject = jest.fn().mockReturnValue(false);
+		let invalidMockUser = new Cards("Pepper the Great", "IDK", "",400.85);
+
+		//Act
+		try{
+			await sut.getInstance().save(invalidMockUser);
+		}catch(e){
+			//Assert
+			expect(e instanceof BadRequestError).toBeTruthy();
+		}
+	})
+	test('will invoke BadRequestError when object contains invalid price', async()=>{
+		//Arrange
+		expect.assertions(1);
+		validator.isCardValidObject = jest.fn().mockReturnValue(false);
+		let invalidMockUser = new Cards("Pepper the Great", "IDK", "",NaN);
+
+		//Act
+		try{
+			await sut.getInstance().save(invalidMockUser);
+		}catch(e){
+			//Assert
+			expect(e instanceof BadRequestError).toBeTruthy();
+		}
+	});
+	test('Will throw BadRequestError when Card object returns a negative price', async ()=>{
+		//Arrange 
+		expect.assertions(1);
+		validator.isCardValidObject = jest.fn().mockReturnValue(false);
+	
+		//Act
+		let invalidMockUser = new Cards("Pepper the Great", "IDK", "Primordial",-400.00);
+		try{
+			await sut.getInstance().save(invalidMockUser)
+		}catch(e){
+			//Assert
+			expect(e instanceof BadRequestError).toBeTruthy();
+		}
+	});
+	test('Will throw ResourcePersistenceError when Card contains a card name already in use', async ()=>{
+		//Arrange 
+		expect.assertions(1);
+		validator.isCardValidObject = jest.fn().mockReturnValue(true);
+	
+		//Act
+		let invalidMockUser = new Cards("Elspeth something something", "IDK", "Primordial",400.00);
+		try{
+			await sut.getInstance().save(invalidMockUser)
+		}catch(e){
+			//Assert
+			expect(e instanceof ResourcePersistenceError).toBeTruthy();
+		}
+	});
+
+	
+
 });
