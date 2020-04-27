@@ -177,6 +177,13 @@ describe('cardRepo', ()=>{
 		}
 	});
 
-	
-
+	test('will return true when successful update of card by card_name', async ()=>{
+		expect.assertions(1);
+		validator.isCardValidObject = jest.fn().mockReturnValue(false);
+		//Act
+		let validMockUser = new Cards ('Teferi something something', 'update', 'update', 88.44);
+		let result = sut.getInstance().update(validMockUser);
+		//Assert
+		expect(result).toBeTruthy();
+	})
 });
