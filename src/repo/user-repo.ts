@@ -50,7 +50,7 @@ export class UserRepository implements CrudRepository<UserInfo> {
 
 	save(newUser: UserInfo): Promise<UserInfo>{
 		return new Promise<UserInfo>((resolve, reject) =>{
-			if(!validator.isValidObject(newUser, 'user_id')){
+			if(!validator.isValidObject(newUser, 'id')){
 				reject(new BadRequestError('Invalid property values found in provided user.'));
 				return;
 			}
