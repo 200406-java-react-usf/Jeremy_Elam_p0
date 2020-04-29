@@ -5,64 +5,36 @@ import {
 	ResourceNotFoundError,
 	ResourcePersistenceError,
 	BadRequestError,
-	AuthenticationError,
 	NotImplementedError
 } from '../errors/errors';
 import validator from '../util/validator';
 
 export class UserRepository implements CrudRepository<UserInfo> {
-	private static instance: UserRepository;
-
-	private constructor(){}
-	static getInstance(){
-		return !UserRepository.instance ? UserRepository.instance = new UserRepository() : UserRepository.instance;
-	}
+	
 	getAll(): Promise<UserInfo[]> {
 		return new Promise<UserInfo[]>((resolve, reject) =>{
 			setTimeout(() =>{
-				let users = [];
-				for(let user of data){
-					users.push({...user});
-				}
-				if(users.length == 0){
-					reject(new ResourceNotFoundError());
-					return;
-				}
-				resolve(users.map(this.removePassword));
+				let users: UserInfo[] = data;
+				resolve(users);
 			});
 		});
 	}
 	getById(id:number): Promise<UserInfo>{
-		return new Promise<UserInfo>((resolve,reject) =>{
-			if(!validator.isValidId(id)){
-				reject(new BadRequestError());
-			}
+		return new Promise<UserInfo>((resolve) =>{
+			
 			setTimeout(() =>{
 				const user = {...data.find(user => user.id === id)};
-				if(Object.keys(user).length === 0){
-					reject(new ResourceNotFoundError());
-					return;
-				}
-				resolve(this.removePassword(user));
+				resolve(user);
 			}, 1000);
 		});
 	}
 
 	save(newUser: UserInfo): Promise<UserInfo>{
 		return new Promise<UserInfo>((resolve, reject) =>{
-			if(!validator.isValidObject(newUser, 'id')){
-				reject(new BadRequestError('Invalid property values found in provided user.'));
-				return;
-			}
 			setTimeout(()=>{
-				let conflict = data.filter( user => user.user_email == newUser.user_email).pop();
-				if(conflict){
-					reject(new ResourcePersistenceError('The provided email address is already taken'));
-					return;
-				}
 				newUser.id = (data.length)+1;
-				data.push(newUser);
-				resolve(this.removePassword(newUser));
+				data.push(newUser)
+				resolve(newUser);
 			});
 		});
 
@@ -93,7 +65,14 @@ export class UserRepository implements CrudRepository<UserInfo> {
 				resolve(true);
 			});
 		});
-    
+	}
+	getUserByCredentials(email: string, password: string):Promise<UserInfo>{
+		return new Promise<UserInfo>((resolve, reject)=>{
+			setTimeout(()=>{
+				const user = {...data.find(user => user.user_email === email && user.user_pw === password)};
+				resolve(user);
+			},250);
+		})
 	}
 	deleteById(id:number): Promise<boolean>{
 		return new Promise<boolean>((resolve, rejects)=>{
@@ -104,10 +83,9 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		});
 	}
 	private removePassword(user: UserInfo): UserInfo {
-		let usr = {...user};
-		delete usr.user_pw;
-		return usr;   
-	}
-
-
+        if(!user || !user.user_pw) return user;
+        let usr = {...user};
+        delete usr.user_pw;
+        return usr;   
+    }
 }
