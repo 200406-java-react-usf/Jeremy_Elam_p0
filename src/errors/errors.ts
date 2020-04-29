@@ -1,10 +1,16 @@
+import { runInThisContext } from "vm";
+
 class ApplicationError {
 
+	statusCode: number;
+	timestamp: Date;
 	message: string;
 	reason: string;
 
-	constructor(rsn?: string) {
+	constructor(statusCode: number, rsn?: string) {
 		this.message = 'An unexpected error occurred.';
+		this.statusCode = statusCode;
+		this.timestamp = new Date();
 		rsn ? (this.reason = rsn) : this.reason = 'Unspecified reason.';
 	}
 
@@ -15,27 +21,24 @@ class ApplicationError {
 }
 
 class ResourcePersistenceError extends ApplicationError {
-
 	constructor(reason?: string) {
-		super(reason);
+		super(409, reason);
 		super.setMessage('The resource was not persisted.');
 	}
 	
 }
 
 class ResourceNotFoundError extends ApplicationError {
-
 	constructor(reason?: string) {
-		super(reason);
+		super(404, reason)
 		super.setMessage('No resource found using provided criteria.');
 	}
 	
 }
 
 class BadRequestError extends ApplicationError {
-
 	constructor(reason?: string) {
-		super(reason);
+		super(400, reason);
 		super.setMessage('Invalid parameters provided.');
 	}
 
@@ -44,7 +47,7 @@ class BadRequestError extends ApplicationError {
 class AuthenticationError extends ApplicationError {
 
 	constructor(reason?: string) {
-		super(reason);
+		super(401, reason);
 		super.setMessage('Authentication failed.');
 	}
 
@@ -53,7 +56,7 @@ class AuthenticationError extends ApplicationError {
 class NotImplementedError extends ApplicationError {
 
 	constructor(reason?: string) {
-		super(reason);
+		super(501, reason);
 		super.setMessage('No implementation yet!');
 	}
 
