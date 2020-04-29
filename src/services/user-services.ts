@@ -8,7 +8,7 @@ import {
 	ResourcePersistenceError, 
 	AuthenticationError 
 } from '../errors/errors';
-import { rejects } from 'assert';
+
 
 
 export class UserService{
@@ -18,6 +18,7 @@ export class UserService{
 
 	getAllUsers(): Promise<UserInfo[]>{
 		return new Promise<UserInfo[]>(async(resolve, rejected)=>{
+
 			// creating an empty array that will hold type UserInfo
 			let users: UserInfo[] = [];
 
@@ -33,7 +34,6 @@ export class UserService{
 				rejected(new ResourceNotFoundError());
 				return;
 			}
-
 			//returns all the users from the database without their passwords.
 			resolve(users.map(this.removePassword));
 		});
@@ -68,11 +68,9 @@ export class UserService{
 				reject(new AuthenticationError('Bad credentials provided'));
 				return;
 			}
-
 			resolve(this.removePassword(authUser));
 		});
 	}
-
 	addNewUser(newUser:UserInfo): Promise<UserInfo>{
 		return new Promise<UserInfo>(async(resolve,reject)=>{
 			if(!isValidObject(newUser,'id')){
@@ -80,7 +78,6 @@ export class UserService{
 			}
 		});
 	}
-
 	updateUser(updateUser: UserInfo):Promise<boolean>{
 		return new Promise<boolean>(async(resolve, reject)=>{
 			if(!isValidObject(this.addNewUser)){
@@ -92,10 +89,8 @@ export class UserService{
 			}catch(e){
 				reject(e);
 			}
-			
 		});
 	}
-
 	private removePassword(user: UserInfo): UserInfo {
 		if(!user || !user.user_pw) return user;
 		let usr = {...user};
