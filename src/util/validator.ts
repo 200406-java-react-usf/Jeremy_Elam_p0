@@ -20,7 +20,7 @@ export const isPropertyOf = (prop: string, type: any) =>{
 	}
 	let typeCreator = <T>(Type: (new()=>T)): T =>{
 		return new Type();
-	}
+	};
 	let tempInstance; 
 	try{
 		tempInstance = typeCreator(type);
@@ -28,7 +28,7 @@ export const isPropertyOf = (prop: string, type: any) =>{
 		return false;
 	}
 	return Object.keys(tempInstance).includes(prop);
-}
+};
 
 export const isCardValidObject = (obj: Object, ...nullableProps: string[]) => {
 	return obj && Object.keys(obj).every(key => {

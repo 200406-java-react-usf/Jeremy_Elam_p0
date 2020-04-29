@@ -6,6 +6,6 @@ export class principal {
 	constructor(id:number, email: string, role: string){
 		this.id = id,
 		this.user_email = email,
-		this. role = role
+		this. role = role;
 	}
 }

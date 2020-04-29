@@ -28,7 +28,7 @@ class ResourcePersistenceError extends ApplicationError {
 
 class ResourceNotFoundError extends ApplicationError {
 	constructor(reason?: string) {
-		super(404, reason)
+		super(404, reason);
 		super.setMessage('No resource found using provided criteria.');
 	}
 	

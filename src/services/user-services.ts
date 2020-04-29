@@ -2,12 +2,12 @@ import {UserInfo} from '../models/user';
 import {UserRepository} from '../repo/user-repo';
 import {isValidId, isValidStrings, isValidObject, isPropertyOf, isEmptyObject} from '../util/validator';
 import { 
-    BadRequestError, 
-    ResourceNotFoundError, 
-    NotImplementedError, 
-    ResourcePersistenceError, 
-    AuthenticationError 
-} from "../errors/errors";
+	BadRequestError, 
+	ResourceNotFoundError, 
+	NotImplementedError, 
+	ResourcePersistenceError, 
+	AuthenticationError 
+} from '../errors/errors';
 import { rejects } from 'assert';
 
 
@@ -35,8 +35,8 @@ export class UserService{
 			}
 
 			//returns all the users from the database without their passwords.
-			resolve(users.map(this.removePassword))
-		})
+			resolve(users.map(this.removePassword));
+		});
 	}
 
 	getUserById(id: number):Promise<UserInfo>{
@@ -70,7 +70,7 @@ export class UserService{
 			}
 
 			resolve(this.removePassword(authUser));
-		})
+		});
 	}
 
 	addNewUser(newUser:UserInfo): Promise<UserInfo>{
@@ -78,7 +78,7 @@ export class UserService{
 			if(!isValidObject(newUser,'id')){
 				reject(new BadRequestError());
 			}
-		})
+		});
 	}
 
 	updateUser(updateUser: UserInfo):Promise<boolean>{
@@ -97,9 +97,9 @@ export class UserService{
 	}
 
 	private removePassword(user: UserInfo): UserInfo {
-        if(!user || !user.user_pw) return user;
-        let usr = {...user};
-        delete usr.user_pw;
-        return usr;   
-    }
+		if(!user || !user.user_pw) return user;
+		let usr = {...user};
+		delete usr.user_pw;
+		return usr;   
+	}
 }

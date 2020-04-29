@@ -33,7 +33,7 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		return new Promise<UserInfo>((resolve, reject) =>{
 			setTimeout(()=>{
 				newUser.id = (data.length)+1;
-				data.push(newUser)
+				data.push(newUser);
 				resolve(newUser);
 			});
 		});
@@ -72,7 +72,7 @@ export class UserRepository implements CrudRepository<UserInfo> {
 				const user = {...data.find(user => user.user_email === email && user.user_pw === password)};
 				resolve(user);
 			},250);
-		})
+		});
 	}
 	deleteById(id:number): Promise<boolean>{
 		return new Promise<boolean>((resolve, rejects)=>{
@@ -83,9 +83,9 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		});
 	}
 	private removePassword(user: UserInfo): UserInfo {
-        if(!user || !user.user_pw) return user;
-        let usr = {...user};
-        delete usr.user_pw;
-        return usr;   
-    }
+		if(!user || !user.user_pw) return user;
+		let usr = {...user};
+		delete usr.user_pw;
+		return usr;   
+	}
 }
