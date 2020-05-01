@@ -5,7 +5,7 @@ user Profile\
 Card List\
 Data Flow Diagram \
 My Project 0 - Magic the Gathering Social Media API \
-![](image/Magic%20The%20Gathering%20Social%20Media.png)
+![](image/Magic_The_Gathering_Social_Media.png)
 
 Required Features:
 
