@@ -1,5 +1,10 @@
-Project 0 For Project 0, you will be building a RESTful API using TypeScript and Express. Associates are allowed to come up with their own API idea, but it must be approved by the trainer; suggested ideas are provided below.
+Data to presist in Db
+-Users
+-User Profile 
+-Card List
 
+Data Flow Diagram 
+![](https://www.lucidchart.com/invitations/accept/0170a1f5-d054-40cc-a8bd-8dbedfa218ee)
 Required Features:
 
 RESTful API (At least Level 2 of the Richardson Maturity Model)
@@ -19,11 +24,3 @@ Git SCM (on GitHub)
 Presentation: 5 minute live demonstration of endpoint consumption using Postman
 
 My Project 0 - Magic the Gathering Social Media API
-
-Data to presist in Db
--Users
--User Profile 
--Card List
-
-Data Flow Diagram 
-![](https://www.lucidchart.com/invitations/accept/0170a1f5-d054-40cc-a8bd-8dbedfa218ee)
