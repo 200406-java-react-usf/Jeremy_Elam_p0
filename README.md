@@ -24,3 +24,6 @@ Data to presist in Db
 -Users
 -User Profile 
 -Card List
+
+Data Flow Diagram 
+![](https://www.lucidchart.com/invitations/accept/0170a1f5-d054-40cc-a8bd-8dbedfa218ee)
