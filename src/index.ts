@@ -1,49 +1,23 @@
-import { UserRepository } from './repo/user-repo';
-import {CardRepository} from './repo/card-repo';
-import { UserInfo } from './models/user';
-import { Cards } from './models/cards'
-import AppConfig  from './config/app'
+import express from 'express';
+import fs from 'fs';
+import morgan from 'morgan';
+import path from 'path';
+
+import {UserRouter} from './routers/user-router';
+import {CardRouter} from './routers/card-router';
 
 
-// let invalidMockUser = new UserInfo(99999, 'update','update','update','update', new Date());
-// (async () =>{
-// 	try{
-// 		let testing = await UserRepository.getInstance().update(invalidMockUser);
-// 	console.log(testing);
-// 	}catch(e){
-// 		console.log(e);
-		
-// 	}
-// 	console.log(await UserRepository.getInstance().getAll());
-// })();
+const app = express();
 
-// (async()=>{
-// 	let invalidMockUser = new Cards("Elspeth something something", "IDK", "Primordial",400.00);
+fs.mkdir(`${__dirname}/logs`, () => {});
+const logStream = fs.createWriteStream(path.join(__dirname, 'logs/access.log'), { flags: 'a' });
+app.use(morgan('combined', { stream: logStream }));
 
-// 	try{
-// 		let testing = await CardRepository.getInstance().save(invalidMockUser)
-// 		console.log(testing);
-// 	}catch(e){
-// 		console.log(e);
-// 	}
-// })();
+app.use('/', express.json());
 
-// (async function(){
+app.use('/users', UserRouter);
+app.use('/cards', CardRouter);
 
-//     let deckRepo = DeckRepository.getInstance();
-
-//     console.log(await deckRepo.getById(2));
-
-// })();
-const userService = AppConfig.userService;
-
-(async ()=>{
-
-	// let validMockUser = new UserInfo(5, 'Pepper','Elam','pepperElam@gmail.com','password', "Admin");
-	try{
-	console.log(await userService.authenticateUser('jeremyelam@gmail.com','password'))
-	} catch(e){
-		console.log(e);
-	}
-})()
-
+app.listen(8080, ()=>{
+	console.log(`Application running and listening at: http://localhost:8080`);
+})

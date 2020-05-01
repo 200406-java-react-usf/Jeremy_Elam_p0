@@ -15,15 +15,13 @@ class ApplicationError {
 	setMessage(message: string) {
 		this.message = message;
 	}
-
 }
 
 class ResourcePersistenceError extends ApplicationError {
 	constructor(reason?: string) {
 		super(409, reason);
 		super.setMessage('The resource was not persisted.');
-	}
-	
+	}	
 }
 
 class ResourceNotFoundError extends ApplicationError {
@@ -39,31 +37,41 @@ class BadRequestError extends ApplicationError {
 		super(400, reason);
 		super.setMessage('Invalid parameters provided.');
 	}
-
 }
 
 class AuthenticationError extends ApplicationError {
-
 	constructor(reason?: string) {
 		super(401, reason);
 		super.setMessage('Authentication failed.');
 	}
-
+}
+class AuthorizationError extends ApplicationError{
+	constructor(reason?: string){
+		super(403, reason);
+		super.setMessage('Authentication failed')
+	}
+}
+class InternalServerError extends ApplicationError {
+	constructor(reason?: string) {
+		super(500, reason);
+		super.setMessage('An unexpected error has ocurred!');
+	}
 }
 
 class NotImplementedError extends ApplicationError {
-
 	constructor(reason?: string) {
 		super(501, reason);
 		super.setMessage('No implementation yet!');
 	}
-
 }
+
 
 export {
 	ResourceNotFoundError,
 	ResourcePersistenceError,
 	BadRequestError,
 	AuthenticationError,
-	NotImplementedError
+	NotImplementedError,
+	AuthorizationError,
+	InternalServerError
 };

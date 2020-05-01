@@ -8,16 +8,22 @@ import {
 	NotImplementedError
 } from '../errors/errors';
 import validator from '../util/validator';
+import {PoolClient} from 'pg';
+import {connectionPool} from '..';
 
 export class UserRepository implements CrudRepository<UserInfo> {
 	
-	getAll(): Promise<UserInfo[]> {
-		return new Promise<UserInfo[]>((resolve, reject) =>{
-			setTimeout(() =>{
-				let users: UserInfo[] = data;
-				resolve(users);
-			});
-		});
+
+	async getAll(): Promise<UserInfo[]> {
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+		}catch(e){
+
+		}finally{
+			client && client.release();
+		}
+		
 	}
 	getById(id:number): Promise<UserInfo>{
 		return new Promise<UserInfo>((resolve) =>{

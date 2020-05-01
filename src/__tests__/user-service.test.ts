@@ -160,6 +160,28 @@ describe('userRepo', () =>{
 		}
 	});
 
+	test(`will add new user to database`, async()=>{
+		expect.hasAssertions();
+		let testing = new UserInfo(1, 'Jeremy', 'update', 'update', 'update', "update")
+		UserRepository.prototype.getUserByCredentials = jest.fn().mockReturnValue(true);
+		//Act
+		let result = await sut.updateUser(testing);
+		expect(result).toBe(true);
+	})
+
+	test(`will invoke BadRequestError when given a user with bad user id`, async() =>{
+		//Arrange
+		expect.assertions(1);
+		let testing = new UserInfo(6, 'Jeremy', 'update', 'update', 'update', "update")
+		UserRepository.prototype.update = jest.fn().mockReturnValue(true);
+		//Act
+		try{
+			await sut.updateUser(testing);
+		}catch(e){
+			expect(e instanceof BadRequestError).toBeTruthy();
+		}
+	})
+
 // 	test('should throw ResourceNotFoundError when id is out of range of current database',async ()=>{
 // 		//Arrange
 // 		expect.assertions(1);

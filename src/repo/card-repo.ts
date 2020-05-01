@@ -12,39 +12,21 @@ import {
 import userDb from '../data/user-db';
 
 export class CardRepository implements CrudRepository<Cards>{
-	private static instance: CardRepository;
-	private constructor(){}
-	static getInstance(){
-		return !CardRepository.instance ? CardRepository.instance = new CardRepository() : CardRepository.instance;
-	}
+	
 	getAll(): Promise<Cards[]>{
 		return new Promise<Cards[]>((resolve,reject)=>{
 			setTimeout(()=> {
-				let cards = [];
-				for(let card of data){
-					cards.push({...card});
-				}
-				if(cards.length == 0){
-					reject(new ResourceNotFoundError());
-					return;
-				}
+				let cards: Cards[] = data;
 				resolve(cards);
 			});
 		});
 	}
 	getById(name: string): Promise<Cards>{
 		return new Promise<Cards>((resolve,reject)=>{
-			if(!validator.isValidStrings(name)){
-				reject(new BadRequestError());
-			}
 			setTimeout(()=>{
 				const card = {...data.find(card => card.card_name === name)};
-				if(Object.keys(card).length === 0){
-					reject(new ResourceNotFoundError());
-					return;
-				}
 				resolve(card);
-			});
+			},1000);
 		});
 	}
 	save(newCard: Cards): Promise<Cards>{

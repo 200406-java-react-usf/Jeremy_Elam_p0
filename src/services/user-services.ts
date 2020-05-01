@@ -71,6 +71,7 @@ export class UserService{
 			resolve(this.removePassword(authUser));
 		});
 	}
+	
 	addNewUser(newUser:UserInfo): Promise<UserInfo>{
 		return new Promise<UserInfo>(async(resolve,reject)=>{
 			if(!isValidObject(newUser,'id')){
