@@ -90,7 +90,7 @@ export class UserService{
 				throw new BadRequestError(`Invalid property values fround in provided user.`);
 			}
 			let emailAvailable = await this.isEmailAvailable(newUser.user_email);
-			if(this.isEmailAvailable){
+			if(!emailAvailable){
 				throw new ResourcePersistenceError('The provided email is already in use.');
 			}
 			newUser.role = 'User';
