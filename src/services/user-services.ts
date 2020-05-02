@@ -16,27 +16,13 @@ export class UserService{
 		this.userRepo = userRepo;
 	}
 
-	getAllUsers(): Promise<UserInfo[]>{
-		return new Promise<UserInfo[]>(async(resolve, rejected)=>{
-
-			// creating an empty array that will hold type UserInfo
-			let users: UserInfo[] = [];
-
-			//this access the  userRepo which will access the database to get all the users from the database.
-			let result = await this.userRepo.getAll();
-
-			//taking all the data obtained in results and looping through that data. Then putting the data into a new array we can use to remove the password from.
-			for(let user of result){
-				users.push({...user});
-			}
-			//checking to make sure the new array contains information
-			if(users.length === 0 ){
-				rejected(new ResourceNotFoundError());
-				return;
-			}
-			//returns all the users from the database without their passwords.
-			resolve(users.map(this.removePassword));
-		});
+	async getAllUsers(): Promise<UserInfo[]>{
+			let users = await this.userRepo.getAll();
+			
+			if(users.length === 0){
+				throw new ResourceNotFoundError();
+		}
+		return users.map(this.removePassword);
 	}
 
 	getUserById(id: number):Promise<UserInfo>{
