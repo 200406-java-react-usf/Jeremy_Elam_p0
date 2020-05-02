@@ -7,9 +7,9 @@ export function mapUserResultSet(resultSet: UserSchema): UserInfo{
 	}
 	return new UserInfo(
 		resultSet.id,
-		resultSet.first_name,
-		resultSet.last_name,
-		resultSet.email,
+		resultSet.user_fn,
+		resultSet.user_ln,
+		resultSet.user_email,
 		resultSet.user_pw,
 		resultSet.name
 	);
