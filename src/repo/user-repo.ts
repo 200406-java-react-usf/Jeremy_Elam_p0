@@ -5,21 +5,29 @@ import {
 	ResourceNotFoundError,
 	ResourcePersistenceError,
 	BadRequestError,
-	NotImplementedError
+	NotImplementedError,
+	InternalServerError
 } from '../errors/errors';
 import validator from '../util/validator';
 import {PoolClient} from 'pg';
 import {connectionPool} from '..';
+import {mapUserResultSet} from '../util/result-set-mapper';
 
 export class UserRepository implements CrudRepository<UserInfo> {
 	
-
+	baseQuery = `select first_name , last_name, email, user_pw, name
+	from users_info
+	left join user_roles 
+	on users_info.role_id = user_roles.id`;
 	async getAll(): Promise<UserInfo[]> {
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
+			let sql = `${this.baseQuery}`;
+			let rs = await client.query(sql);
+			return rs.rows.map(mapUserResultSet);
 		}catch(e){
-
+			throw new InternalServerError();
 		}finally{
 			client && client.release();
 		}
