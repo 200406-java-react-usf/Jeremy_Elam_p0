@@ -41,6 +41,6 @@ export class CardService{
 				return rejects(new ResourceNotFoundError());
 			}
 			resolve(cards);
-		})
+		});
 	}
 }

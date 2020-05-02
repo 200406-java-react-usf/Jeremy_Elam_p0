@@ -12,6 +12,6 @@ export class UserInfo {
 		this.user_ln = ln;
 		this.user_email = email;
 		this.user_pw = pw;
-		this.role = role
+		this.role = role;
 	}
 }

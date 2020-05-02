@@ -6,6 +6,6 @@ const sessionConfig = {
 	},
 	resave: false,
 	saveUninitialized: false
-}
+};
 
 export const sessionMiddleware = session(sessionConfig);

@@ -9,4 +9,4 @@ export const adminGuard = (req: Request, resp: Response, next)=>{
 	}else{
 		resp.sendStatus(403).send(new AuthenticationError());
 	}
-}
+};

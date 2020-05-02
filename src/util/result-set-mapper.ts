@@ -1,5 +1,5 @@
 import {UserSchema} from './schemas';
-import {UserInfo} from '../models/user'
+import {UserInfo} from '../models/user';
 
 export function mapUserResultSet(resultSet: UserSchema): UserInfo{
 	if(!resultSet){

@@ -48,7 +48,7 @@ class AuthenticationError extends ApplicationError {
 class AuthorizationError extends ApplicationError{
 	constructor(reason?: string){
 		super(403, reason);
-		super.setMessage('Authentication failed')
+		super.setMessage('Authentication failed');
 	}
 }
 class InternalServerError extends ApplicationError {

@@ -9,8 +9,8 @@ export interface UserSchema{
 
 export interface ProfileSchema{
 
-};
+}
 
 export interface CardSchema{
 
-};
+}

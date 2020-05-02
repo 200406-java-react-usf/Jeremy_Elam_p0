@@ -17,10 +17,10 @@ export class UserService{
 	}
 
 	async getAllUsers(): Promise<UserInfo[]>{
-			let users = await this.userRepo.getAll();
+		let users = await this.userRepo.getAll();
 			
-			if(users.length === 0){
-				throw new ResourceNotFoundError();
+		if(users.length === 0){
+			throw new ResourceNotFoundError();
 		}
 		return users.map(this.removePassword);
 	}
