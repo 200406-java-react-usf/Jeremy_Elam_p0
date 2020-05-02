@@ -18,25 +18,22 @@ export class UserService{
 
 	async getAllUsers(): Promise<UserInfo[]>{
 		let users = await this.userRepo.getAll();
-			
 		if(users.length === 0){
 			throw new ResourceNotFoundError();
 		}
 		return users.map(this.removePassword);
 	}
 
-	getUserById(id: number):Promise<UserInfo>{
-		return new Promise<UserInfo>(async(resolve, rejects)=>{
-			if(!isValidId(id)){
-				return rejects(new BadRequestError());
-			}
-			let user = {...await this.userRepo.getById(id)};
-			if(isEmptyObject(user)){
-				return rejects(new ResourceNotFoundError());
-			}
-			resolve(this.removePassword(user));
-		});
-	}
+	async getUserById(id: number):Promise<UserInfo>{
+		if(!isValidId(id)){
+			throw new BadRequestError();
+		}
+		let user = {...await this.userRepo.getById(id)};
+		if(isEmptyObject(user)){
+			throw new ResourceNotFoundError();
+		}
+		return this.removePassword(user);
+	};
 
 	authenticateUser(email: string, password:string): Promise<UserInfo>{
 		return new Promise<UserInfo>(async(resolve, reject)=>{
