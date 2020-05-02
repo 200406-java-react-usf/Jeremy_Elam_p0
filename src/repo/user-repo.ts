@@ -15,10 +15,10 @@ import {mapUserResultSet} from '../util/result-set-mapper';
 
 export class UserRepository implements CrudRepository<UserInfo> {
 	
-	baseQuery = `select users_info.id,first_name , last_name, email, users_info.user_pw, name
+	baseQuery = `select user_fn , user_ln , user_email ,user_pw, name
 	from users_info
 	left join user_roles 
-	on users_info.role_id = user_roles.id`;
+	on users_info.role = user_roles.id`;
 	async getAll(): Promise<UserInfo[]> {
 		let client: PoolClient;
 		try{
@@ -48,17 +48,57 @@ export class UserRepository implements CrudRepository<UserInfo> {
 	};
 	
 
-	save(newUser: UserInfo): Promise<UserInfo>{
-		return new Promise<UserInfo>((resolve, reject) =>{
-			setTimeout(()=>{
-				newUser.id = (data.length)+1;
-				data.push(newUser);
-				resolve(newUser);
-			});
-		});
-
-
+	async save(newUser: UserInfo): Promise<UserInfo>{
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let roleId = (await client.query('select id from user_roles where name = $1', [newUser.role])).rows[0].id;
+			let sql = `insert into users_info(first_name , last_name , email ,user_pw, role_id )
+					values($1, $2, $3, $4, $5, $6) returning id`;
+			let rs = await client.query(sql, [newUser.user_fn, newUser.user_ln, newUser.user_email, newUser.user_pw,roleId]);
+			newUser.id = rs.rows[0].id; 
+			return newUser;
+		} catch (e){
+			console.log(e);
+			throw new InternalServerError();
+		}finally {
+			client && client.release();
+		}
 	}
+
+	async getUserByUniqueKey(key: string, val: string):Promise<UserInfo>{
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let sql = `${this.baseQuery} where users_info.${key} = $1`;
+			
+			let rs = await client.query(sql, [val]);
+			return mapUserResultSet(rs.rows[0]);
+		}catch (e){
+			throw new InternalServerError();
+		}finally{
+			client && client.release();
+		}
+	}
+	async getUserByCredentials(email: string, password: string):Promise<UserInfo>{
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let sql = `${this.baseQuery} where users_info.email = $1 and users_info.password = $2;`;
+			
+			
+			let rs = await client.query(sql, [email, password]);
+			
+			
+			return mapUserResultSet(rs.rows[0]);
+		}catch(e){
+			throw new InternalServerError()
+		} finally{
+			client && client.release();
+		}
+	}
+
+	
 
 	update(updatedUser: UserInfo): Promise<boolean> {
 		return new Promise<boolean>((resolve, reject) => {
@@ -85,14 +125,7 @@ export class UserRepository implements CrudRepository<UserInfo> {
 			});
 		});
 	}
-	getUserByCredentials(email: string, password: string):Promise<UserInfo>{
-		return new Promise<UserInfo>((resolve, reject)=>{
-			setTimeout(()=>{
-				const user = {...data.find(user => user.user_email === email && user.user_pw === password)};
-				resolve(user);
-			},250);
-		});
-	}
+	
 	deleteById(id:number): Promise<boolean>{
 		return new Promise<boolean>((resolve, rejects)=>{
 			if(!validator.isValidId){
