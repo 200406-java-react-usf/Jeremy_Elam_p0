@@ -11,12 +11,17 @@ const UserService = AppConfig.userService;
 
 UserRouter.get('', async (req, resp)=>{
 	try{
-		//read 
-		// let reqURL =url.parse(req.url,true);
-		let payload = await UserService.getAllUsers();
-		return resp.status(200).json(payload);
+		
+		let reqURL =url.parse(req.url,true);
+		if(!isEmptyObject<ParsedUrlQuery>(reqURL.query)){
+			let payload = await UserService.getUserByUniqueKey({...reqURL.query});
+			resp.status(200).json(payload);
+		} else{
+			let payload = await UserService.getAllUsers();
+			resp.status(200).json(payload);
+		}
 	}catch(e){
-		return resp.status(404).json(e);
+		resp.status(e.statusCode).json(e);
 	}
 });
 
