@@ -15,7 +15,7 @@ import {mapUserResultSet} from '../util/result-set-mapper';
 
 export class UserRepository implements CrudRepository<UserInfo> {
 	
-	baseQuery = `select first_name , last_name, email, user_pw, name
+	baseQuery = `select users_info.id,first_name , last_name, email, users_info.user_pw, name
 	from users_info
 	left join user_roles 
 	on users_info.role_id = user_roles.id`;
@@ -33,15 +33,20 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		}
 		
 	}
-	getById(id:number): Promise<UserInfo>{
-		return new Promise<UserInfo>((resolve) =>{
-			
-			setTimeout(() =>{
-				const user = {...data.find(user => user.id === id)};
-				resolve(user);
-			}, 1000);
-		});
-	}
+	async getById(id:number): Promise<UserInfo>{
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let sql = `${this.baseQuery} where users_info.id = ${id};`;
+			let rs = await client.query(sql);
+			return mapUserResultSet(rs.rows[0]);
+		}catch(e){
+			throw new InternalServerError();
+		}finally{
+			client && client.release();
+		}
+	};
+	
 
 	save(newUser: UserInfo): Promise<UserInfo>{
 		return new Promise<UserInfo>((resolve, reject) =>{
