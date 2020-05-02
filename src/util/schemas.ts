@@ -3,8 +3,8 @@ export interface UserSchema{
 	first_name: string;
 	last_name: string;
 	email: string;
-	password: string;
-	role_name: string
+	user_pw: string;
+	name: string
 }
 
 export interface ProfileSchema{

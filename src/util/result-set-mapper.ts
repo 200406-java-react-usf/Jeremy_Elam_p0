@@ -10,7 +10,7 @@ export function mapUserResultSet(resultSet: UserSchema): UserInfo{
 		resultSet.first_name,
 		resultSet.last_name,
 		resultSet.email,
-		resultSet.password,
-		resultSet.role_name
+		resultSet.user_pw,
+		resultSet.name
 	);
 }
