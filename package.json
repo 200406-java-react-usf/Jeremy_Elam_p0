@@ -38,6 +38,7 @@
         "typescript": "^3.8.3"
     },
     "dependencies": {
+        "@types/pg": "^7.14.3",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "express-session": "^1.17.1",
