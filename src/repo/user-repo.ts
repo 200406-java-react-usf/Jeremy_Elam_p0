@@ -53,9 +53,11 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		try{
 			client = await connectionPool.connect();
 			let roleId = (await client.query('select id from user_roles where name = $1', [newUser.role])).rows[0].id;
-			let sql = `insert into users_info(first_name , last_name , email ,user_pw, role_id )
-					values($1, $2, $3, $4, $5, $6) returning id`;
+			console.log(roleId);
+			let sql = `insert into users_info(user_fn , user_ln , user_email ,user_pw, role )
+					values($1, $2, $3, $4, $5) returning id`;
 			let rs = await client.query(sql, [newUser.user_fn, newUser.user_ln, newUser.user_email, newUser.user_pw,roleId]);
+			
 			newUser.id = rs.rows[0].id; 
 			return newUser;
 		} catch (e){
@@ -98,7 +100,7 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		}
 	}
 
-	
+
 
 	update(updatedUser: UserInfo): Promise<boolean> {
 		return new Promise<boolean>((resolve, reject) => {
