@@ -35,6 +35,31 @@ export class UserService{
 		return this.removePassword(user);
 	};
 
+	async getUserByUniqueKey(queryObj: any): Promise<UserInfo>{
+		try {
+			let queryKeys = Object.keys(queryObj);
+			console.log(queryObj);
+			
+			if(!queryKeys.every(key => isPropertyOf(key, UserInfo))){
+				throw new BadRequestError();
+			}
+			let key = queryKeys[0];
+			let val = queryObj[key];
+			if(key === 'id'){
+				return await this.getUserById(+val);
+			}
+			if(!isValidStrings(val)){
+				throw new BadRequestError();
+			}
+			let user = await this.userRepo.getUserByUniqueKey(key, val);
+			if(isEmptyObject(user)){
+				throw new ResourceNotFoundError();
+			}
+			return this.removePassword(user);
+		}catch (e){
+			throw e;
+		}
+	}
 	authenticateUser(email: string, password:string): Promise<UserInfo>{
 		return new Promise<UserInfo>(async(resolve, reject)=>{
 			if(!isValidStrings(email, password)){
@@ -44,6 +69,10 @@ export class UserService{
 			let authUser: UserInfo;
 			try{
 				authUser = await this.userRepo.getUserByCredentials(email, password);
+				if(isEmptyObject(authUser)){
+					throw new AuthenticationError('Bad credentials provided');
+				}
+				return this.removePassword(authUser);
 			}catch(e){
 				reject(e);
 			}
@@ -55,25 +84,45 @@ export class UserService{
 		});
 	}
 	
-	addNewUser(newUser:UserInfo): Promise<UserInfo>{
-		return new Promise<UserInfo>(async(resolve,reject)=>{
+	async addNewUser(newUser:UserInfo): Promise<UserInfo>{
+		try {
 			if(!isValidObject(newUser,'id')){
-				reject(new BadRequestError());
+				throw new BadRequestError(`Invalid property values fround in provided user.`);
 			}
-		});
+			let emailAvailable = await this.isEmailAvailable(newUser.user_email);
+			if(this.isEmailAvailable){
+				throw new ResourcePersistenceError('The provided email is already in use.');
+			}
+			newUser.role = 'User';
+			const persistedUser = await this.userRepo.save(newUser);
+			return this.removePassword(persistedUser);
+		}catch (e) {
+			throw e
+		}
 	}
-	updateUser(updateUser: UserInfo):Promise<boolean>{
-		return new Promise<boolean>(async(resolve, reject)=>{
-			if(!isValidObject(this.addNewUser)){
-				reject(new BadRequestError('Invalid user provided (invalid values found'));
-				return;
-			}
-			try{
-				resolve(await this.userRepo.update(updateUser));
-			}catch(e){
-				reject(e);
-			}
-		});
+	// updateUser(updateUser: UserInfo):Promise<boolean>{
+	// 	return new Promise<boolean>(async(resolve, reject)=>{
+	// 		if(!isValidObject(this.addNewUser)){
+	// 			reject(new BadRequestError('Invalid user provided (invalid values found'));
+	// 			return;
+	// 		}
+	// 		try{
+	// 			resolve(await this.userRepo.update(updateUser));
+	// 		}catch(e){
+	// 			reject(e);
+	// 		}
+	// 	});
+	// }
+
+	private async isEmailAvailable(email: string): Promise<boolean>{
+		try{
+			await this.getUserByUniqueKey({'user_email':email});
+		}catch(e){
+			console.log('email is available')
+			return true;
+		}
+		console.log('email is unavailable')
+		return false;
 	}
 	private removePassword(user: UserInfo): UserInfo {
 		if(!user || !user.user_pw) return user;
