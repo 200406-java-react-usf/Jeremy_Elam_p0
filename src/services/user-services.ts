@@ -33,7 +33,7 @@ export class UserService{
 			throw new ResourceNotFoundError();
 		}
 		return this.removePassword(user);
-	};
+	}
 
 	async getUserByUniqueKey(queryObj: any): Promise<UserInfo>{
 		try {
@@ -60,6 +60,7 @@ export class UserService{
 			throw e;
 		}
 	}
+
 	authenticateUser(email: string, password:string): Promise<UserInfo>{
 		return new Promise<UserInfo>(async(resolve, reject)=>{
 			if(!isValidStrings(email, password)){
@@ -87,7 +88,7 @@ export class UserService{
 	async addNewUser(newUser:UserInfo): Promise<UserInfo>{
 		try {
 			if(!isValidObject(newUser,'id')){
-				throw new BadRequestError(`Invalid property values fround in provided user.`);
+				throw new BadRequestError('Invalid property values fround in provided user.');
 			}
 			let emailAvailable = await this.isEmailAvailable(newUser.user_email);
 			if(!emailAvailable){
@@ -97,8 +98,23 @@ export class UserService{
 			const persistedUser = await this.userRepo.save(newUser);
 			return this.removePassword(persistedUser);
 		}catch (e) {
-			throw e
+			throw e;
 		}
+	}
+	async deleteUserById(id: number): Promise<boolean>{
+		let keys = Object.keys(id);
+		if(!keys.every(key=> isPropertyOf(key, UserInfo))){
+			throw new BadRequestError();
+		}
+		let key = keys[0];
+		let value = +id[key];
+
+		if(!isValidId(value)){
+			throw new BadRequestError();
+		}
+		await this.userRepo.deleteById(value);
+
+		return true;
 	}
 	// updateUser(updateUser: UserInfo):Promise<boolean>{
 	// 	return new Promise<boolean>(async(resolve, reject)=>{
@@ -113,15 +129,14 @@ export class UserService{
 	// 		}
 	// 	});
 	// }
-
 	private async isEmailAvailable(email: string): Promise<boolean>{
 		try{
 			await this.getUserByUniqueKey({'user_email':email});
 		}catch(e){
-			console.log('email is available')
+			console.log('email is available');
 			return true;
 		}
-		console.log('email is unavailable')
+		console.log('email is unavailable');
 		return false;
 	}
 	private removePassword(user: UserInfo): UserInfo {
