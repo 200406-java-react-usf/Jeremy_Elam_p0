@@ -1,6 +1,6 @@
 import {UserInfo} from '../models/user';
 import {UserRepository} from '../repo/user-repo';
-import {isValidId, isValidStrings, isValidObject, isPropertyOf, isEmptyObject} from '../util/validator';
+import validator, {isValidId, isValidStrings, isValidObject, isPropertyOf, isEmptyObject} from '../util/validator';
 import { 
 	BadRequestError, 
 	ResourceNotFoundError, 
@@ -8,6 +8,7 @@ import {
 	ResourcePersistenceError, 
 	AuthenticationError 
 } from '../errors/errors';
+import { config } from 'dotenv/types';
 
 
 
@@ -103,6 +104,7 @@ export class UserService{
 	}
 	async deleteUserById(id: number): Promise<boolean>{
 		let keys = Object.keys(id);
+		console.log(keys);
 		if(!keys.every(key=> isPropertyOf(key, UserInfo))){
 			throw new BadRequestError();
 		}
@@ -116,19 +118,33 @@ export class UserService{
 
 		return true;
 	}
-	// updateUser(updateUser: UserInfo):Promise<boolean>{
-	// 	return new Promise<boolean>(async(resolve, reject)=>{
-	// 		if(!isValidObject(this.addNewUser)){
-	// 			reject(new BadRequestError('Invalid user provided (invalid values found'));
-	// 			return;
-	// 		}
-	// 		try{
-	// 			resolve(await this.userRepo.update(updateUser));
-	// 		}catch(e){
-	// 			reject(e);
-	// 		}
-	// 	});
-	// }
+	async updateUser(updateUser: UserInfo):Promise<boolean>{
+		try{
+			if(!isValidObject(updateUser)){
+				throw new BadRequestError();
+			}
+			
+			let emailAvailable = await this.isEmailAvailable(updateUser.user_email);
+	
+			let database = await this.getUserById(updateUser.id);
+			
+			let databaseEmail = await this.getUserByUniqueKey({'user_email':updateUser.user_email});
+			
+			if(database.user_email == databaseEmail.user_email){
+				
+				emailAvailable = true;
+				
+			}
+			if(!emailAvailable){
+				throw new ResourcePersistenceError();
+			}
+			return await this.userRepo.update(updateUser);
+		}catch(e){
+			throw e;
+		}
+	}
+	
+
 	private async isEmailAvailable(email: string): Promise<boolean>{
 		try{
 			await this.getUserByUniqueKey({'user_email':email});
