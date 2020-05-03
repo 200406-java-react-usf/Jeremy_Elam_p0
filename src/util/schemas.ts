@@ -8,7 +8,12 @@ export interface UserSchema{
 }
 
 export interface ProfileSchema{
-
+	user_un: string;
+	id: number;
+	fav_archetypes: string;
+	fav_colors: object;
+	fav_card: string;
+	user_info: number;
 }
 
 export interface CardSchema{
