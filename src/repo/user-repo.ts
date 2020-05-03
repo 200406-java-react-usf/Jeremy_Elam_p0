@@ -2,10 +2,6 @@ import data from '../data/user-db';
 import { UserInfo } from '../models/user';
 import { CrudRepository } from './crud-repo';
 import {  
-	ResourceNotFoundError,
-	ResourcePersistenceError,
-	BadRequestError,
-	NotImplementedError,
 	InternalServerError
 } from '../errors/errors';
 import validator from '../util/validator';
@@ -25,7 +21,6 @@ export class UserRepository implements CrudRepository<UserInfo> {
 			client = await connectionPool.connect();
 			let sql = `${this.baseQuery}`;
 			let rs = await client.query(sql);
-			console.log(rs);
 			return rs.rows.map(mapUserResultSet);
 		}catch(e){
 			throw new InternalServerError();
@@ -96,32 +91,21 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		}
 	}
 
-
-
-	update(updatedUser: UserInfo): Promise<boolean> {
-		return new Promise<boolean>((resolve, reject) => {
-			if (!validator.isValidObject(updatedUser)) {
-				reject(new BadRequestError('Invalid user provided (invalid values found).'));
-				return;
-			}
-			setTimeout(() => {
-				let persistedUser = data.find(user => user.id === updatedUser.id);
-				if (!persistedUser) {
-					reject(new ResourceNotFoundError('No user found with provided id.'));
-					return;
-				}
-				const conflict = data.filter(user => {
-					if (user.id == updatedUser.id) return false;
-					return user.user_email == updatedUser.user_email; 
-				}).pop();
-				if (conflict) {
-					reject(new ResourcePersistenceError('Provided email is taken by another user.'));
-					return;
-				}
-				persistedUser = updatedUser;
-				resolve(true);
-			});
-		});
+	async update(updatedUser: UserInfo): Promise<boolean> {
+	
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let userId = (await client.query('select id from users_info where id = $1', [updatedUser.id])).rows[0].id;
+			let userRole = (await client.query('select id from user_roles where name = $1', [updatedUser.role])).rows[0].id;
+			let sql = 'update users_info set user_fn = $2, user_ln = $3, user_email = $4, user_pw = $5, role = $6 where id = $1';
+			await client.query(sql, [userId, updatedUser.user_fn, updatedUser.user_ln, updatedUser.user_email, updatedUser.user_pw ,userRole]);
+			return true;
+		} catch(e){
+			throw new InternalServerError();
+		} finally {
+			client && client.release();
+		}
 	}
 	
 	async deleteById(id:number): Promise<boolean>{
@@ -136,11 +120,5 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		}finally{
 			client && client.release();
 		}
-	}
-	private removePassword(user: UserInfo): UserInfo {
-		if(!user || !user.user_pw) return user;
-		let usr = {...user};
-		delete usr.user_pw;
-		return usr;   
 	}
 }
