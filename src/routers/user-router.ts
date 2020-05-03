@@ -31,7 +31,7 @@ UserRouter.get('/:id', async(req, resp) =>{
 		let payload = await UserService.getUserById(id);
 		return resp.status(200).json(payload);
 	}catch(e){
-		return resp.status(404).json(e);
+		return resp.status(e.statusCode).json(e);
 	}
 });
 
@@ -46,13 +46,24 @@ UserRouter.post('',async (req, resp) =>{
 	}
 });
 
-UserRouter.delete('', async(req, res) =>{
-	const id = +req.params.id;
+UserRouter.delete('', async(req, resp) =>{
+	
 	try{
-		let payload = await UserService.deleteUserById(id);
-		return res.status(202).json(payload);
+		let payload = await UserService.deleteUserById(req.body);
+		return resp.status(202).json(payload);
 	}catch(e){
-		return res.status(e.status).json(e);
+		return resp.status(e.statusCode).json(e);
+	}
+});
+
+UserRouter.put('', async(req, resp) =>{
+	// console.log('UPDATE REQUEST RECEIVED AT /users');
+	// console.log(req.body);
+	try{
+		let payload = await UserService.updateUser(req.body);
+		return resp.status(201).json(payload);
+	}catch (e){
+		return resp.status(e.statusCode).json(e);
 	}
 });
 
