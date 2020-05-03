@@ -20,7 +20,7 @@ CardRouter.get('', async(req,resp)=>{
 			resp.status(200).json(payload);
 		}
 	}catch(e){
-		return resp.status(404).json(e);
+		return resp.status(e.statusCode).json(e);
 	}
 });
 
@@ -30,7 +30,7 @@ CardRouter.get('/:id', async(req, resp) =>{
 		let payload = await CardService.getCardById(id);
 		return resp.status(200).json(payload);
 	}catch(e){
-		return resp.status(404).json(e);
+		return resp.status(e.statusCode).json(e);
 	}
 });
 
@@ -43,4 +43,22 @@ CardRouter.post('', async(req, resp) =>{
 	}catch(e){
 		return resp.status(e.statusCode).json(e);
 	}	
+});
+
+CardRouter.delete('', async(req, resp) =>{
+	try{
+		let payload = await CardService.deleteCardById(req.body);
+		return resp.status(202).json(payload);
+	}catch(e){
+		return resp.status(e.statusCode).json(e);
+	}
+});
+
+CardRouter.put('', async(req, resp)=>{
+	try{
+		let payload = await CardService.updateCard(req.body);
+		return resp.status(201).json(payload);
+	}catch(e){
+		return resp.status(e.statusCode).json(e);
+	}
 });
