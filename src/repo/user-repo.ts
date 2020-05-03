@@ -1,7 +1,7 @@
 import data from '../data/user-db';
 import { UserInfo } from '../models/user';
 import { CrudRepository } from './crud-repo';
-import {  
+import {
 	InternalServerError
 } from '../errors/errors';
 import validator from '../util/validator';
