@@ -15,7 +15,7 @@ import {mapUserResultSet} from '../util/result-set-mapper';
 
 export class UserRepository implements CrudRepository<UserInfo> {
 	
-	baseQuery = `select user_fn , user_ln , user_email ,user_pw, name
+	baseQuery = `select users_info.id, user_fn , user_ln , user_email ,user_pw, name
 	from users_info
 	left join user_roles 
 	on users_info.role = user_roles.id`;
@@ -25,6 +25,7 @@ export class UserRepository implements CrudRepository<UserInfo> {
 			client = await connectionPool.connect();
 			let sql = `${this.baseQuery}`;
 			let rs = await client.query(sql);
+			console.log(rs);
 			return rs.rows.map(mapUserResultSet);
 		}catch(e){
 			throw new InternalServerError();
@@ -45,7 +46,7 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		}finally{
 			client && client.release();
 		}
-	};
+	}
 	
 
 	async save(newUser: UserInfo): Promise<UserInfo>{
@@ -73,7 +74,6 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		try{
 			client = await connectionPool.connect();
 			let sql = `${this.baseQuery} where users_info.${key} = $1`;
-			
 			let rs = await client.query(sql, [val]);
 			return mapUserResultSet(rs.rows[0]);
 		}catch (e){
@@ -87,14 +87,10 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		try{
 			client = await connectionPool.connect();
 			let sql = `${this.baseQuery} where users_info.email = $1 and users_info.password = $2;`;
-			
-			
 			let rs = await client.query(sql, [email, password]);
-			
-			
 			return mapUserResultSet(rs.rows[0]);
 		}catch(e){
-			throw new InternalServerError()
+			throw new InternalServerError();
 		} finally{
 			client && client.release();
 		}
@@ -128,13 +124,18 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		});
 	}
 	
-	deleteById(id:number): Promise<boolean>{
-		return new Promise<boolean>((resolve, rejects)=>{
-			if(!validator.isValidId){
-				rejects(new BadRequestError('Invalid id number was provided'));
-			}
-			rejects(new NotImplementedError());
-		});
+	async deleteById(id:number): Promise<boolean>{
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let sql = 'delete from users_info where id = $1';
+			let rs = await client.query(sql, [id]);
+			return rs.rows[0];
+		}catch(e){
+			throw new InternalServerError();
+		}finally{
+			client && client.release();
+		}
 	}
 	private removePassword(user: UserInfo): UserInfo {
 		if(!user || !user.user_pw) return user;
