@@ -10,6 +10,8 @@ import {
 } from '../errors/errors';
 import cardDb from '../data/card-db';
 import { UserService } from './user-services';
+import { PoolClient } from 'pg';
+import { connectionPool } from '..';
 
 export class CardService{
 	constructor(private cardRepo: CardRepository){
@@ -20,7 +22,7 @@ export class CardService{
 		if(cards.length === 0){
 			throw new ResourceNotFoundError();
 		}
-		return cards
+		return cards;
 	}
 	async getCardById(id:number): Promise<Cards>{
 		if(!isValidId(id)){
@@ -67,15 +69,52 @@ export class CardService{
 				throw new BadRequestError('Invalid property values fround in provided user.');
 			}
 			let cardNameAvailable = await this.isCardNameAvailable(newCard.card_name);
+			
 			if(!cardNameAvailable){
-				throw new ResourcePersistenceError('The provided card name is already in use.')
+				throw new ResourcePersistenceError('The provided card name is already in use.');
 			}
+			
 			const persistedCard = await this.cardRepo.save(newCard);
+			
+
 			return persistedCard;
 		}catch(e){
 			throw e;
 		}
 	}
+
+	async updateCard(updateCard: Cards): Promise<boolean>{
+		try{
+			if(!isValidObject(updateCard)){
+				throw new BadRequestError();
+			}
+			let cardNameAvailable = await this.isCardNameAvailable(updateCard.card_name);
+			if(!cardNameAvailable){
+				throw new ResourcePersistenceError();
+			}
+			return await this.cardRepo.update(updateCard);
+		}catch(e){
+			throw e;
+		}
+	}
+	async deleteCardById(id: number): Promise<boolean>{
+		
+		let keys = Object.keys(id);
+		console.log(keys);
+		
+		if(!keys.every(key => isPropertyOf(key,Cards))){
+			throw new BadRequestError();
+		}
+		let key = keys[0];
+		let value = +id[key];
+
+		if(!isValidId(value)){
+			throw new BadRequestError();
+		}
+		await this.cardRepo.deleteById(value);
+		return true;
+	}
+	
 	private async isCardNameAvailable(cardName: string): Promise<boolean>{
 		try{
 			await this.getCardByUniqueKey({'card_name':cardName});
@@ -83,7 +122,7 @@ export class CardService{
 			console.log('card name is available');
 			return true;
 		}
-		console.log('email is available ');
+		console.log('card name not available ');
 		return false;
 	}
 }
