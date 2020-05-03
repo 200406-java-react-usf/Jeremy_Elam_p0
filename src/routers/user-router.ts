@@ -44,5 +44,15 @@ UserRouter.post('',async (req, resp) =>{
 	} catch(e){
 		return resp.status(e.statusCode).json(e);
 	}
-})
+});
+
+UserRouter.delete('', async(req, res) =>{
+	const id = +req.params.id;
+	try{
+		let payload = await UserService.deleteUserById(id);
+		return res.status(202).json(payload);
+	}catch(e){
+		return res.status(e.status).json(e);
+	}
+});
 
