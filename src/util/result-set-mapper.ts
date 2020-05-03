@@ -27,5 +27,5 @@ export function mapCardResultSet(resultSet: CardSchema): Cards{
 		resultSet.card_set,
 		resultSet.card_rarity,
 		resultSet.card_price
-	)
+	);
 }
