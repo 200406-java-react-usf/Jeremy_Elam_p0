@@ -1,6 +1,6 @@
 import {UserInfo} from '../models/user';
 import {UserRepository} from '../repo/user-repo';
-import validator, {isValidId, isValidStrings, isValidObject, isPropertyOf, isEmptyObject} from '../util/validator';
+import {isValidId, isValidStrings, isValidObject, isPropertyOf, isEmptyObject} from '../util/validator';
 import { 
 	BadRequestError, 
 	ResourceNotFoundError, 
