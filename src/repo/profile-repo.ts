@@ -7,8 +7,14 @@ import {mapProfileResultSet} from '../util/result-set-mapper';
 
 export class ProfileRepository implements CrudRepository<UserProfile>{
 
-	baseQuery = 'select * from full_profile_info'
-
+	baseQuery = `select 
+	profile.user_un, 
+	profile.profile_id, 
+	profile.fav_archetypes , 
+	profile.fav_color , 
+	card_sets.card_set , 
+	card_info.card_name, 
+	users_info.id from profile join users_info on users_info.id =  profile.id join card_sets on card_sets.id = profile.fav_set join card_info on card_info.id = profile.fav_card`
 	async getAll(): Promise<UserProfile[]>{
 		let client: PoolClient;
 		try{
@@ -36,16 +42,36 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 		}
 	}
 	async save(newProfile: UserProfile): Promise<UserProfile>{
+		console.log('______________________');
+		console.log(newProfile.id);
+		
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
 			let setId = (await client.query('select id from card_sets where card_set = $1',[newProfile.card_set])).rows[0].id;
 			let cardId = (await client.query('select id from card_info where card_name = $1',[newProfile.card_name])).rows[0].id;
 
-			let sql = 'insert into profile(user_un, fav_archetypes, fav_color, fav_set, fav_card, user_info) values($1,$2,$3,$4,$5,$6) returning id;';
-			let rs = await client.query(sql, [newProfile.user_un, newProfile.fav_archetypes, newProfile.fav_colors,setId, cardId,newProfile.user_info]);
+			let sql = 'insert into profile(user_un, fav_archetypes, fav_color, fav_set, fav_card, id) values($1,$2,$3,$4,$5,$6) returning id;';
+			let rs = await client.query(sql, [newProfile.user_un, newProfile.fav_archetypes, newProfile.fav_colors,setId, cardId,newProfile.id]);
 			return newProfile;
 		}catch(e){
+			console.log(e);
+			
+			throw new InternalServerError();
+		}finally{
+			client && client.release();
+		}
+	}
+
+	async getProfileByUniqueKey(key: string, val:string): Promise<UserProfile>{
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let sql = `${this.baseQuery} where profile.${key} = $1`;
+			let rs = await client.query(sql,[val]);
+			return mapProfileResultSet(rs.rows[0]);
+		}catch(e){
+			console.log(e);
 			throw new InternalServerError();
 		}finally{
 			client && client.release();
@@ -80,5 +106,7 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 			client && client.release();
 		}
 	}
+
+
 
 }
