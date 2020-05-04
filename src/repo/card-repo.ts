@@ -1,4 +1,4 @@
-import data from '../data/card-db';
+
 import { Cards } from '../models/cards';
 import {CrudRepository} from './crud-repo';
 import validator from '../util/validator';
