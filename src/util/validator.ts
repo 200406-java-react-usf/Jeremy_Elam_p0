@@ -1,5 +1,5 @@
 export const isValidId = (id: number): boolean =>{
-	return(id && typeof id === 'number' && Number.isInteger(id) && id > 0);
+	return !!(id && typeof id === 'number' && Number.isInteger(id) && id > 0);
 };
 
 export const isValidStrings = (...strs: string[]): boolean => {
@@ -8,7 +8,6 @@ export const isValidStrings = (...strs: string[]): boolean => {
 
 export const isValidObject = (obj: Object, ...nullableProps: string[]) => {
 	return obj && Object.keys(obj).every(key => {
-		if (key == 'id') return isValidId(obj['id']);
 		if (nullableProps.includes(key)) return true;
 		return obj[key];
 	});
@@ -29,18 +28,18 @@ export const isPropertyOf = (prop: string, type: any) =>{
 	}
 	return Object.keys(tempInstance).includes(prop);
 };
-
-export const isCardValidObject = (obj: Object, ...nullableProps: string[]) => {
-	return obj && Object.keys(obj).every(key => {
-		if(key == 'card_price') return isValidPrice(obj['card_price']);
-		if (key == 'card_name') return isValidStrings(obj['card_name']);
-		if (nullableProps.includes(key)) return true;
-		return obj[key];
-	});
-};
-export const isValidPrice = (price: number): boolean =>{
-	return(price && typeof price === 'number' && price > 0);
-};
+//These are not going to be used as of yet because i haven't started their methods
+// export const isCardValidObject = (obj: Object, ...nullableProps: string[]) => {
+// 	return obj && Object.keys(obj).every(key => {
+// 		if(key == 'card_price') return isValidPrice(obj['card_price']);
+// 		if (key == 'card_name') return isValidStrings(obj['card_name']);
+// 		if (nullableProps.includes(key)) return true;
+// 		return obj[key];
+// 	});
+// };
+// export const isValidPrice = (price: number): boolean =>{
+// 	return(price && typeof price === 'number' && price > 0);
+// };
 
 export function isEmptyObject<T>(obj: T){
 	return obj && Object.keys(obj).length === 0;
@@ -52,8 +51,8 @@ export default{
 	isValidId,
 	isValidStrings,
 	isValidObject,
-	isCardValidObject,
-	isValidPrice,
+	// isCardValidObject,
+	// isValidPrice,
 	isEmptyObject,
 	isPropertyOf
 };
