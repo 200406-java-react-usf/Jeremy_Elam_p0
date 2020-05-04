@@ -38,12 +38,11 @@ export function mapProfileResultSet(resultSet: ProfileSchema): UserProfile{
 	}
 	return new UserProfile(
 		resultSet.user_un,
-		resultSet.id,
+		resultSet.profile_id,
 		resultSet.fav_archetypes,
 		resultSet.fav_colors,
-		resultSet.fav_card,
+		resultSet.card_set,
+		resultSet.card_name,
 		resultSet.user_info
 	)
-
-	
 }
