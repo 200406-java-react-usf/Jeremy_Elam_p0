@@ -6,6 +6,7 @@ import path from 'path';
 
 import {UserRouter} from './routers/user-router';
 import {CardRouter} from './routers/card-router';
+import {ProfileRouter} from './routers/profile-router';
 import { Pool } from 'pg';
 
 //environment configuration 
@@ -29,6 +30,7 @@ app.use(morgan('combined', { stream: logStream }));
 
 app.use('/', express.json());
 
+app.use('/profiles', ProfileRouter);
 app.use('/users', UserRouter);
 app.use('/cards', CardRouter);
 
