@@ -11,10 +11,10 @@ export interface ProfileSchema{
 	user_un: string;
 	profile_id: number;
 	fav_archetypes: string;
-	fav_colors: string;
+	fav_color: string;
 	card_set: string;
 	card_name: string;
-	user_info: number;
+	id: number;
 }
 
 export interface CardSchema{
