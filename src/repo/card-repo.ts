@@ -1,13 +1,10 @@
 
 import { Cards } from '../models/cards';
 import {CrudRepository} from './crud-repo';
-import validator from '../util/validator';
-import {  
-	InternalServerError
-} from '../errors/errors';
+import { InternalServerError} from '../errors/errors';
 import {PoolClient} from 'pg';
 import {connectionPool} from '..';
-import {mapCardResultSet, mapUserResultSet} from '../util/result-set-mapper';
+import {mapCardResultSet} from '../util/result-set-mapper';
 
 export class CardRepository implements CrudRepository<Cards>{
 	

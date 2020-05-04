@@ -5,14 +5,14 @@ export class UserProfile {
 	fav_colors: string;
 	card_set: string;
 	card_name: string;
-	user_info: number;
-	constructor (un:string, id:number, archetype: string, color: string,set: string, card: string, user_info: number){
+	id: number;
+	constructor (un:string, profile_id:number, archetype: string, color: string,set: string, card: string, id: number){
 		this.user_un = un;
-		this.profile_id =id;
+		this.profile_id =profile_id;
 		this.fav_archetypes = archetype;
 		this.fav_colors = color;
 		this.card_set = set;
 		this.card_name = card;
-		this.user_info = user_info;
+		this.id = id;
 	}
 }
