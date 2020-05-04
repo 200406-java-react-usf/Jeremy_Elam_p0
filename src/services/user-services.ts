@@ -62,29 +62,29 @@ export class UserService{
 		}
 	}
 
-	authenticateUser(email: string, password:string): Promise<UserInfo>{
-		return new Promise<UserInfo>(async(resolve, reject)=>{
-			if(!isValidStrings(email, password)){
-				reject(new BadRequestError());
-				return;
-			}
-			let authUser: UserInfo;
-			try{
-				authUser = await this.userRepo.getUserByCredentials(email, password);
-				if(isEmptyObject(authUser)){
-					throw new AuthenticationError('Bad credentials provided');
-				}
-				return this.removePassword(authUser);
-			}catch(e){
-				reject(e);
-			}
-			if(isEmptyObject(authUser)){
-				reject(new AuthenticationError('Bad credentials provided'));
-				return;
-			}
-			resolve(this.removePassword(authUser));
-		});
-	}
+	// authenticateUser(email: string, password:string): Promise<UserInfo>{
+	// 	return new Promise<UserInfo>(async(resolve, reject)=>{
+	// 		if(!isValidStrings(email, password)){
+	// 			reject(new BadRequestError());
+	// 			return;
+	// 		}
+	// 		let authUser: UserInfo;
+	// 		try{
+	// 			authUser = await this.userRepo.getUserByCredentials(email, password);
+	// 			if(isEmptyObject(authUser)){
+	// 				throw new AuthenticationError('Bad credentials provided');
+	// 			}
+	// 			return this.removePassword(authUser);
+	// 		}catch(e){
+	// 			reject(e);
+	// 		}
+	// 		if(isEmptyObject(authUser)){
+	// 			reject(new AuthenticationError('Bad credentials provided'));
+	// 			return;
+	// 		}
+	// 		resolve(this.removePassword(authUser));
+	// 	});
+	// }
 	
 	async addNewUser(newUser:UserInfo): Promise<UserInfo>{
 		try {
@@ -155,7 +155,7 @@ export class UserService{
 		console.log('email is unavailable');
 		return false;
 	}
-	private removePassword(user: UserInfo): UserInfo {
+	removePassword(user: UserInfo): UserInfo {
 		if(!user || !user.user_pw) return user;
 		let usr = {...user};
 		delete usr.user_pw;
