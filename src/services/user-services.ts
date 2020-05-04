@@ -8,7 +8,7 @@ import {
 	ResourcePersistenceError, 
 	AuthenticationError 
 } from '../errors/errors';
-import { config } from 'dotenv/types';
+
 
 
 
