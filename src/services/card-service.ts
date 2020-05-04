@@ -8,10 +8,7 @@ import {
 	ResourcePersistenceError, 
 	AuthenticationError 
 } from '../errors/errors';
-import cardDb from '../data/card-db';
-import { UserService } from './user-services';
-import { PoolClient } from 'pg';
-import { connectionPool } from '..';
+
 
 export class CardService{
 	constructor(private cardRepo: CardRepository){
@@ -37,19 +34,16 @@ export class CardService{
 	async getCardByUniqueKey(queryObj: any): Promise<Cards>{
 		try{
 			let queryKeys = Object.keys(queryObj);
-			console.log('1');
 			
 			if(!queryKeys.every(key => isPropertyOf(key, Cards))){
 				throw new BadRequestError();
 			}
-			console.log('2');
 			
 			let key = queryKeys[0];
 			let val = queryObj[key];
 			if(key === 'id'){
 				return await this.getCardById(+val);
 			}
-			console.log('3');
 			
 			if(!isValidStrings(val)){
 				throw new BadRequestError();
@@ -66,7 +60,7 @@ export class CardService{
 	async addNewCard(newCard: Cards): Promise<Cards>{
 		try{
 			if(!isValidObject(newCard, 'id')){
-				throw new BadRequestError('Invalid property values fround in provided user.');
+				throw new BadRequestError('Invalid property values found in provided user.');
 			}
 			let cardNameAvailable = await this.isCardNameAvailable(newCard.card_name);
 			
