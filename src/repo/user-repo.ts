@@ -1,4 +1,3 @@
-import data from '../data/user-db';
 import { UserInfo } from '../models/user';
 import { CrudRepository } from './crud-repo';
 import {
