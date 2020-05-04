@@ -40,9 +40,9 @@ export function mapProfileResultSet(resultSet: ProfileSchema): UserProfile{
 		resultSet.user_un,
 		resultSet.profile_id,
 		resultSet.fav_archetypes,
-		resultSet.fav_colors,
+		resultSet.fav_color,
 		resultSet.card_set,
 		resultSet.card_name,
-		resultSet.user_info
+		resultSet.id
 	)
 }
