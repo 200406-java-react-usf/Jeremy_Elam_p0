@@ -3,7 +3,6 @@ import express from 'express';
 import AppConfig from '../config/app';
 import {isEmptyObject} from '../util/validator';
 import { ParsedUrlQuery} from 'querystring';
-import {adminGuard} from '../middleware/auth-middleware';
 import { CardService } from '../services/card-service';
 import { CardRouter } from './card-router';
 
@@ -12,7 +11,6 @@ export const ProfileRouter = express.Router();
 const ProfileService = AppConfig.profileService;
 
 ProfileRouter.get('', async(req, resp)=>{
-	console.log('test');
 	try{
 		let reqURL = url.parse(req.url, true);
 		if(!isEmptyObject<ParsedUrlQuery>(reqURL.query)){
@@ -37,8 +35,6 @@ ProfileRouter.get('/:id', async(req, resp) =>{
 })
 
 ProfileRouter.post('', async(req, resp)=>{
-	console.log('POST REQUEST RECEIVED AT /profile');
-	console.log(req.body);
 	try{
 		let payload = await ProfileService.addNewProfile(req.body);
 		return resp.status(201).json(payload);
@@ -48,7 +44,6 @@ ProfileRouter.post('', async(req, resp)=>{
 });
 
 ProfileRouter.put('', async(req, resp)=>{
-	console.log(req.body);
 	try{
 		let payload = await ProfileService.updatedProfile(req.body);
 		return resp.status(201).json(payload);
