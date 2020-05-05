@@ -3,7 +3,6 @@ import express from 'express';
 import AppConfig from '../config/app';
 import {isEmptyObject} from '../util/validator';
 import {ParsedUrlQuery} from 'querystring';
-import {adminGuard} from '../middleware/auth-middleware';
 
 export const CardRouter = express.Router();
 
@@ -35,8 +34,6 @@ CardRouter.get('/:id', async(req, resp) =>{
 });
 
 CardRouter.post('', async(req, resp) =>{
-	console.log('POST REQUEST RECEIVED AT /cards');
-	console.log(req.body);
 	try{
 		let payload = await CardService.addNewCard(req.body);
 		return resp.status(201).json(payload);
