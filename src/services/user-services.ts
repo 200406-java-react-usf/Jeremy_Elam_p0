@@ -102,9 +102,8 @@ export class UserService{
 			throw e;
 		}
 	}
-	async deleteUserById(id: number): Promise<boolean>{
+	async deleteUserById(id: object): Promise<boolean>{
 		let keys = Object.keys(id);
-		console.log(keys);
 		if(!keys.every(key=> isPropertyOf(key, UserInfo))){
 			throw new BadRequestError();
 		}
@@ -145,7 +144,7 @@ export class UserService{
 	}
 	
 
-	private async isEmailAvailable(email: string): Promise<boolean>{
+	async isEmailAvailable(email: string): Promise<boolean>{
 		try{
 			await this.getUserByUniqueKey({'user_email':email});
 		}catch(e){
