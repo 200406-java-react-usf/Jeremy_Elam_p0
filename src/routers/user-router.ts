@@ -3,7 +3,7 @@ import express from 'express';
 import AppConfig from '../config/app';
 import {isEmptyObject} from '../util/validator';
 import { ParsedUrlQuery} from 'querystring';
-import {adminGuard} from '../middleware/auth-middleware';
+
 
 export const UserRouter = express.Router();
 
@@ -35,9 +35,7 @@ UserRouter.get('/:id', async(req, resp) =>{
 	}
 });
 
-UserRouter.post('',async (req, resp) =>{
-	console.log('POST REQUEST RECEIVED AT /users');
-	console.log(req.body);
+UserRouter.post('',async (req, resp) =>{	
 	try{
 		let newUser = await UserService.addNewUser(req.body);
 		return resp.status(201).json(newUser);
@@ -57,8 +55,6 @@ UserRouter.delete('', async(req, resp) =>{
 });
 
 UserRouter.put('', async(req, resp) =>{
-	// console.log('UPDATE REQUEST RECEIVED AT /users');
-	// console.log(req.body);
 	try{
 		let payload = await UserService.updateUser(req.body);
 		return resp.status(201).json(payload);
