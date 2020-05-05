@@ -2,7 +2,7 @@ import {UserRepository} from '../repo/user-repo';
 import * as mockIndex from '..';
 import * as mockMapper from '../util/result-set-mapper';
 import {UserInfo} from '../models/user';
-import { release } from 'os';
+
 
 jest.mock('..',()=>{
 	return {
@@ -127,7 +127,7 @@ describe('userRepo', ()=>{
 	test('should return true when a users is successfully deleted by the user', async()=>{
 		//Arrange
 		expect.hasAssertions();
-		let mockUser = new UserInfo(1,'salt','elam', 'saltelam@gmail.com','password','User');
+		// let mockUser = new UserInfo(1,'salt','elam', 'saltelam@gmail.com','password','User');
 		//Act
 		let result = await sut.getUserByCredentials("email", "password");
 		//Assert
