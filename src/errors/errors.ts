@@ -39,18 +39,18 @@ class BadRequestError extends ApplicationError {
 	}
 }
 
-class AuthenticationError extends ApplicationError {
-	constructor(reason?: string) {
-		super(401, reason);
-		super.setMessage('Authentication failed.');
-	}
-}
-class AuthorizationError extends ApplicationError{
-	constructor(reason?: string){
-		super(403, reason);
-		super.setMessage('Authentication failed');
-	}
-}
+// class AuthenticationError extends ApplicationError {
+// 	constructor(reason?: string) {
+// 		super(401, reason);
+// 		super.setMessage('Authentication failed.');
+// 	}
+// }
+// class AuthorizationError extends ApplicationError{
+// 	constructor(reason?: string){
+// 		super(403, reason);
+// 		super.setMessage('Authentication failed');
+// 	}
+// }
 class InternalServerError extends ApplicationError {
 	constructor(reason?: string) {
 		super(500, reason);
@@ -58,20 +58,20 @@ class InternalServerError extends ApplicationError {
 	}
 }
 
-class NotImplementedError extends ApplicationError {
-	constructor(reason?: string) {
-		super(501, reason);
-		super.setMessage('No implementation yet!');
-	}
-}
+// class NotImplementedError extends ApplicationError {
+// 	constructor(reason?: string) {
+// 		super(501, reason);
+// 		super.setMessage('No implementation yet!');
+// 	}
+// }
 
 
 export {
 	ResourceNotFoundError,
 	ResourcePersistenceError,
 	BadRequestError,
-	AuthenticationError,
-	NotImplementedError,
-	AuthorizationError,
+	// AuthenticationError,
+	// NotImplementedError,
+	// AuthorizationError,
 	InternalServerError
 };
