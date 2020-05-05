@@ -4,9 +4,7 @@ import {isValidId, isValidStrings, isValidObject, isPropertyOf, isEmptyObject} f
 import { 
 	BadRequestError, 
 	ResourceNotFoundError, 
-	NotImplementedError, 
 	ResourcePersistenceError, 
-	AuthenticationError 
 } from '../errors/errors';
 
 
@@ -94,7 +92,7 @@ export class CardService{
 	async deleteCardById(id: object): Promise<boolean>{
 		
 		let keys = Object.keys(id);
-		console.log(keys);
+		
 		
 		if(!keys.every(key => isPropertyOf(key,Cards))){
 			throw new BadRequestError();
@@ -112,10 +110,8 @@ export class CardService{
 		try{
 			await this.getCardByUniqueKey({'card_name':cardName});
 		}catch(e){
-			console.log('card name is available');
 			return true;
 		}
-		console.log('card name not available ');
 		return false;
 	}
 }
