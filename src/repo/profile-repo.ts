@@ -36,15 +36,12 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 			let rs = await client.query(sql);
 			return mapProfileResultSet(rs.rows[0]);
 		}catch(e){
-			throw new InternalServerError();
+			throw new InternalServerError(e.message);
 		}finally{
 			client && client.release();
 		}
 	}
 	async save(newProfile: UserProfile): Promise<UserProfile>{
-		console.log('______________________');
-		console.log(newProfile.id);
-		
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
@@ -55,8 +52,6 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 			let rs = await client.query(sql, [newProfile.user_un, newProfile.fav_archetypes, newProfile.fav_colors,setId, cardId,newProfile.id]);
 			return newProfile;
 		}catch(e){
-			console.log(e);
-			
 			throw new InternalServerError();
 		}finally{
 			client && client.release();
@@ -71,7 +66,6 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 			let rs = await client.query(sql,[val]);
 			return mapProfileResultSet(rs.rows[0]);
 		}catch(e){
-			console.log(e);
 			throw new InternalServerError();
 		}finally{
 			client && client.release();
