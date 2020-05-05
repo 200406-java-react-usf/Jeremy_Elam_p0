@@ -2,11 +2,9 @@ import {ProfileService} from '../services/profile-service';
 import {UserProfile} from '../models/profile';
 import validator from '../util/validator';
 import {
-	BadRequestError, 
-	AuthenticationError, 
+	BadRequestError,  
 	ResourceNotFoundError, 
 	ResourcePersistenceError,
-	NotImplementedError
 }from '../errors/errors';
 
 jest.mock('../repo/profile-repo', ()=>{
@@ -66,7 +64,6 @@ describe('profileService', ()=>{
 			await sut.getAllProfile();
 		}catch(e){
 			//Assert
-			console.log(e)
 			expect(e instanceof ResourceNotFoundError).toBe(true);
 		}
 	});
@@ -277,7 +274,69 @@ describe('profileService', ()=>{
 		expect(result).toBeTruthy();
 		expect(result.id).toBe(1);
 	});
-	
 
+	test('should return ResourceNotFoundError when given a value for getByUniqueKey that does not exist', async () => {
+
+        expect.assertions(1);
+
+        validator.isPropertyOf = jest.fn().mockReturnValue(true);
+        validator.isEmptyObject = jest.fn().mockReturnValue(true);
+        validator.isValidStrings = jest.fn().mockReturnValue(false);
+
+        mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
+            return new Promise<UserProfile> ((resolve) => {
+				resolve(mockProfiles.find(user => user[key] === val));
+            });
+        });
+
+        try{
+            await sut.getProfileByUniqueKey({user_un: ''});
+        } catch(e){
+            expect(e instanceof BadRequestError).toBe(true);
+        }
+
+	});
+	test('should return ResourceNotFoundError when given a value for getByUniqueKey that does not exist', async () => {
+
+        expect.assertions(1);
+
+        validator.isPropertyOf = jest.fn().mockReturnValue(true);
+        validator.isEmptyObject = jest.fn().mockReturnValue(false);
+        validator.isValidStrings = jest.fn().mockReturnValue(true);
+
+        mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
+            return new Promise<UserProfile> ((resolve) => {
+				resolve(mockProfiles.find(user => user[key] === val));
+            });
+        });
+
+        try{
+            await sut.getProfileByUniqueKey({user_un: ''});
+        } catch(e){
+            expect(e instanceof BadRequestError).toBe(true);
+        }
+
+	});
+	test('should return ResourceNotFoundError when given a value for getByUniqueKey that does not exist', async () => {
+
+        expect.assertions(1);
+
+        validator.isPropertyOf = jest.fn().mockReturnValue(false);
+        validator.isEmptyObject = jest.fn().mockReturnValue(true);
+        validator.isValidStrings = jest.fn().mockReturnValue(true);
+
+        mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
+            return new Promise<UserProfile> ((resolve) => {
+				resolve(mockProfiles.find(user => user[key] === val));
+            });
+        });
+
+        try{
+            await sut.getProfileByUniqueKey({user_username: 'lazyspell'});
+        } catch(e){
+            expect(e instanceof BadRequestError).toBe(true);
+        }
+
+	});
 
 })

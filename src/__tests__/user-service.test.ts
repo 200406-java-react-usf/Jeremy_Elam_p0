@@ -3,11 +3,9 @@ import {UserService} from '../services/user-services';
 import { UserInfo } from '../models/user';
 import validator from '../util/validator';
 import {  
-	BadRequestError, 
-	AuthenticationError, 
+	BadRequestError,  
 	ResourceNotFoundError, 
 	ResourcePersistenceError,
-	NotImplementedError 
 } from '../errors/errors';
 
 
@@ -248,7 +246,6 @@ describe('userService', ()=>{
 
 		//Act
 		let result = await sut.updateUser( new UserInfo(5, 'pepper', 'Elam', 'saltelam@gmail.com', 'passwords', 'Admin'));
-		console.log(result);
 		//Assert
 		expect(result).toBe(true);
 	});

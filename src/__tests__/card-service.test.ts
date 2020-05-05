@@ -3,11 +3,9 @@ import {CardService} from '../services/card-service';
 import {Cards} from '../models/cards';
 import validator from '../util/validator';
 import {
-	BadRequestError, 
-	AuthenticationError, 
+	BadRequestError,  
 	ResourceNotFoundError, 
 	ResourcePersistenceError,
-	NotImplementedError
 }from '../errors/errors';
 
 jest.mock('../repo/card-repo',()=>{
@@ -229,7 +227,7 @@ describe('cardService', ()=>{
 
 		//Act
 		let result = await sut.updateCard( new Cards(5, 'Human something something', 'IDK', 'Mythic', 8.00));
-		console.log(result);
+		
 		//Assert
 		expect(result).toBe(true);
 	});
