@@ -9,7 +9,6 @@ import {
 	ResourcePersistenceError,
 	NotImplementedError 
 } from '../errors/errors';
-import e from 'express';
 
 
 
@@ -156,7 +155,104 @@ describe('userService', ()=>{
 			//Assert
 			expect(e instanceof ResourceNotFoundError).toBe(true);
 		}
-	})
+	});
+
+	test('should return new user information without password when a new user is given', async()=>{
+		expect.hasAssertions();
+		validator.isValidObject = jest.fn().mockReturnValue(true);
+		mockRepo.isEmailAvailable = jest.fn().mockReturnValue(true);
+		mockRepo.save = jest.fn().mockImplementation((newUser:UserInfo)=>{
+			return new Promise<UserInfo>((resolve) => {
+				mockUsers.push(newUser);
+				resolve(newUser);
+			});
+		});
+		//Act 
+		let result = await sut.addNewUser(new UserInfo(6, 'Pepper', 'Elam', 'pepperelam@gmail.com', 'password', 'User'))
+		//Assert 
+		expect(result).toBeTruthy();
+		expect(mockUsers.length).toBe(6);
+	});
+
+	test('should return BadRequestError when given a bad UserInfo object', async()=>{
+		//Arrange
+		expect.hasAssertions();
+		validator.isValidObject = jest.fn().mockReturnValue(false);
+		//Act
+		try{
+			await sut.addNewUser(new UserInfo(2, 'pepper', '', 'flameking0127@gmail.com', 'password', 'User'))
+		}catch(e){
+			//Assert
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+	});
+	test('should return ResourcePersistenceError when given a UserInfo with an email address that is already being used', async()=>{
+		//Arrange
+		expect.hasAssertions();
+		validator.isValidObject = jest.fn().mockReturnValue(true);
+		sut.isEmailAvailable = jest.fn().mockReturnValue(false);
+		//Act
+		try{
+			await sut.addNewUser(new UserInfo(6, 'pepper', 'elam', 'flameking0127@gmail.com', 'password', 'User'))
+		}catch(e){
+			//Assert
+			expect(e instanceof ResourcePersistenceError).toBe(true);
+		}
+	});
+
+	test('should return true if a user with the given id number was successfully deleted', async ()=>{
+		expect.hasAssertions();
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		validator.isValidId = jest.fn().mockReturnValue(true);
+		mockRepo.deleteById = jest.fn().mockReturnValue(true);
+
+		//Act
+		let result = await sut.deleteUserById({"id":1});
+		//Assert 
+		expect(result).toBe(true);
+	});
+
+	test('should return BadRequestError when trying to delete an id but given an invalid id', async ()=>{
+		//Arrange
+		expect.hasAssertions();
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		validator.isValidId = jest.fn().mockReturnValue(false);
+		//Act
+		try{
+			await sut.deleteUserById({"id": -1});
+		}catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+		
+	});
+	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
+		//Arrange
+		expect.hasAssertions();
+		validator.isPropertyOf = jest.fn().mockReturnValue(false);
+		//Act
+		try{
+			await sut.deleteUserById({"": 1});
+		}catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+		
+	});
+
+	test('should return true when an user is successfully update given a valid user object', async ()=>{
+		expect.hasAssertions();
+		validator.isValidObject = jest.fn().mockReturnValue(true);
+		sut.isEmailAvailable = jest.fn().mockReturnValue(true);
+		sut.getUserById = jest.fn().mockReturnValue(true);
+		sut.getUserByUniqueKey = jest.fn().mockReturnValue(true);
+		mockRepo.update = jest.fn().mockReturnValue(true);
+
+		//Act
+		let result = await sut.updateUser( new UserInfo(5, 'pepper', 'Elam', 'saltelam@gmail.com', 'passwords', 'Admin'));
+		console.log(result);
+		//Assert
+		expect(result).toBe(true);
+	});
 
 	
-})
+	
+});
