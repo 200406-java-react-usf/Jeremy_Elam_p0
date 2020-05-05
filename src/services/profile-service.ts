@@ -23,7 +23,7 @@ export class ProfileService{
 		console.log(profile);
 		
 		if(profile.length === 0){
-			throw new ResourcePersistenceError();
+			throw new ResourceNotFoundError();
 		}
 		return profile;
 	}
@@ -91,7 +91,7 @@ export class ProfileService{
 		}
 	}
 
-	async deleteProfileById(id: number): Promise<boolean>{
+	async deleteProfileById(id: object): Promise<boolean>{
 		
 		let keys = Object.keys(id);
 		console.log(keys);
@@ -111,7 +111,7 @@ export class ProfileService{
 
 
 
-	private async isUserInfoAvailable(userInfo: number): Promise<boolean>{	
+	async isUserInfoAvailable(userInfo: number): Promise<boolean>{	
 		try{
 			await this.getProfileByUniqueKey({'id':userInfo});
 		}catch(e){

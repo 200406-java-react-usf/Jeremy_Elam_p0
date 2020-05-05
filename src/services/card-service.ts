@@ -91,7 +91,7 @@ export class CardService{
 			throw e;
 		}
 	}
-	async deleteCardById(id: number): Promise<boolean>{
+	async deleteCardById(id: object): Promise<boolean>{
 		
 		let keys = Object.keys(id);
 		console.log(keys);
@@ -101,7 +101,6 @@ export class CardService{
 		}
 		let key = keys[0];
 		let value = +id[key];
-
 		if(!isValidId(value)){
 			throw new BadRequestError();
 		}
@@ -109,7 +108,7 @@ export class CardService{
 		return true;
 	}
 	
-	private async isCardNameAvailable(cardName: string): Promise<boolean>{
+	async isCardNameAvailable(cardName: string): Promise<boolean>{
 		try{
 			await this.getCardByUniqueKey({'card_name':cardName});
 		}catch(e){

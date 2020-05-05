@@ -253,6 +253,48 @@ describe('userService', ()=>{
 		expect(result).toBe(true);
 	});
 
+	test('should return correct user when given correct key and value for getByUniqueKey', async () => {
+
+		expect.assertions(2);
+
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		validator.isEmptyObject = jest.fn().mockReturnValue(true);
+		validator.isValidStrings = jest.fn().mockReturnValue(true);
+		
+		sut.getUserById = jest.fn().mockImplementation((id: number)=>{
+			return new Promise<UserInfo>((resolve)=>{
+				resolve(mockUsers.find(user => user.id === id))
+			})
+		})
+		mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
+			return new Promise<UserInfo> ((resolve) => {
+				resolve(mockUsers.find(user => user[key] === val));
+			});
+		});
+
+		let result = await sut.getUserByUniqueKey({id: 1});
+
+		expect(result).toBeTruthy();
+		expect(result.id).toBe(1);
+	});
+	
+	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
+		//Arrange
+		expect.assertions(1)
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		validator.isEmptyObject = jest.fn().mockReturnValue(true);
+		validator.isValidStrings = jest.fn().mockReturnValue(false);
+		//Act
+		try{
+			await sut.getUserByUniqueKey({id: ''});
+		}catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+		
+	});
+	
+
+
 	
 	
 });
