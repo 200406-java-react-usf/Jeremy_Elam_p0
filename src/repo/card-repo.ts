@@ -1,4 +1,4 @@
-
+/* eslint-disable no-unused-vars */
 import { Cards } from '../models/cards';
 import {CrudRepository} from './crud-repo';
 import { InternalServerError} from '../errors/errors';
@@ -7,8 +7,13 @@ import {connectionPool} from '..';
 import {mapCardResultSet} from '../util/result-set-mapper';
 
 export class CardRepository implements CrudRepository<Cards>{
-	
+	/**
+	 * base query where all the data is being pull from 
+	 */
 	baseQuery = 'select * from full_card_info'
+	/**
+	 * Retrieves all card info from base query and returns the result
+	 */
 	async getAll(): Promise<Cards[]>{
 		let client: PoolClient;
 		try{
@@ -22,6 +27,10 @@ export class CardRepository implements CrudRepository<Cards>{
 			client && client.release();
 		}
 	}
+	/**
+	 * Retrieves one card info from base query and returns the result
+	 * @param id 
+	 */
 	async getById(id: number): Promise<Cards>{
 		let client: PoolClient;
 		try{
@@ -35,7 +44,14 @@ export class CardRepository implements CrudRepository<Cards>{
 			client && client.release();
 		}
 	}
-
+	
+	
+	/**
+	 * 
+	 * Retrieves one card based off the key and value given and returns the information of the result. 
+	 * @param key 
+	 * @param val 
+	 */
 	async getCardByUniqueKey(key: string, val: string):Promise<Cards>{
 		let client: PoolClient;
 		try{
@@ -49,6 +65,10 @@ export class CardRepository implements CrudRepository<Cards>{
 			client && client.release();
 		}
 	}
+	/**
+	 * Saves new card object into database
+	 * @param newCard 
+	 */
 	async save(newCard: Cards): Promise<Cards>{
 		let client: PoolClient;
 		try{
@@ -67,6 +87,10 @@ export class CardRepository implements CrudRepository<Cards>{
 			client && client.release();
 		}
 	}
+	/**
+	 * Updates existing card with new information based on card object
+	 * @param updateCard 
+	 */
 	async update(updateCard: Cards): Promise<boolean>{
 		let client: PoolClient;
 		try{
@@ -87,9 +111,11 @@ export class CardRepository implements CrudRepository<Cards>{
 			client && client.release();
 		}
 	}
+	/**
+	 * Deletes card when given a card Id
+	 * @param id 
+	 */
 	async deleteById(id: number): Promise<boolean>{
-	
-		
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();

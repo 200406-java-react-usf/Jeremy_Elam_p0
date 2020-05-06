@@ -1,4 +1,3 @@
-import {CardRepository as sut, CardRepository} from '../repo/card-repo';
 import {CardService} from '../services/card-service';
 import {Cards} from '../models/cards';
 import validator from '../util/validator';
@@ -16,7 +15,7 @@ jest.mock('../repo/card-repo',()=>{
 		save = jest.fn();
 		update = jest.fn();
 		deleteById = jest.fn();
-	}
+	};
 });
 
 describe('cardService', ()=>{
@@ -40,7 +39,7 @@ describe('cardService', ()=>{
 				save: jest.fn(),
 				update: jest.fn(),
 				deleteById: jest.fn()
-			}
+			};
 		});
 		sut = new CardService(mockRepo);
 	});
@@ -76,7 +75,7 @@ describe('cardService', ()=>{
 			return new Promise<Cards>((resolve)=> resolve(mockCards[id-1]));
 		});
 		//Act 
-		let result = await sut.getCardById(1)
+		let result = await sut.getCardById(1);
 		//Assert
 		expect(result).toBeTruthy();
 		expect(result.card_rarity).toBe('Mythic');
@@ -88,7 +87,7 @@ describe('cardService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getCardById(-1)
+			await sut.getCardById(-1);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -100,7 +99,7 @@ describe('cardService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getCardById(3.14)
+			await sut.getCardById(3.14);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -112,7 +111,7 @@ describe('cardService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getCardById(0)
+			await sut.getCardById(0);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -124,7 +123,7 @@ describe('cardService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getCardById(NaN)
+			await sut.getCardById(NaN);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -153,7 +152,7 @@ describe('cardService', ()=>{
 			});
 		});
 		//Act 
-		let result = await sut.addNewCard(new Cards(6,'Human something something', 'IDK', 'Mythic', 20.00))
+		let result = await sut.addNewCard(new Cards(6,'Human something something', 'IDK', 'Mythic', 20.00));
 		//Assert 
 		expect(result).toBeTruthy();
 		expect(mockCards.length).toBe(6);
@@ -165,7 +164,7 @@ describe('cardService', ()=>{
 		validator.isValidObject = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.addNewCard(new Cards(6,'Human something something', '', 'Mythic', 8.00))
+			await sut.addNewCard(new Cards(6,'Human something something', '', 'Mythic', 8.00));
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -179,7 +178,7 @@ describe('cardService', ()=>{
 		sut.isCardNameAvailable = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.addNewCard(new Cards(6,'Domri something something', 'IDK', 'Mythic', 8.00))
+			await sut.addNewCard(new Cards(6,'Domri something something', 'IDK', 'Mythic', 8.00));
 		}catch(e){
 			//Assert
 			expect(e instanceof ResourcePersistenceError).toBe(true);
@@ -192,7 +191,7 @@ describe('cardService', ()=>{
 		mockRepo.deleteById = jest.fn().mockReturnValue(true);
 
 		//Act
-		let result = await sut.deleteCardById({"id":1});
+		let result = await sut.deleteCardById({'id':1});
 		//Assert 
 		expect(result).toBe(true);
 	});
@@ -203,7 +202,7 @@ describe('cardService', ()=>{
 		validator.isValidId = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.deleteCardById({"id": -1});
+			await sut.deleteCardById({'id': -1});
 		}catch(e){
 			expect(e instanceof BadRequestError).toBe(true);
 		}
@@ -214,7 +213,7 @@ describe('cardService', ()=>{
 		validator.isPropertyOf = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.deleteCardById({"": 1});
+			await sut.deleteCardById({'': 1});
 		}catch(e){
 			expect(e instanceof BadRequestError).toBe(true);
 		}
@@ -231,6 +230,43 @@ describe('cardService', ()=>{
 		//Assert
 		expect(result).toBe(true);
 	});
+	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
+		//Arrange
+		expect.hasAssertions();
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		//Act
+		try{
+			await sut.getCardByUniqueKey({'somethingRandom': 1});
+		}catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+		
+	});
+	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
+		//Arrange
+		expect.hasAssertions();
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		//Act
+		try{
+			await sut.getCardByUniqueKey({'user_pw': 1});
+		}catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+		
+	});
+	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
+		//Arrange
+		expect.assertions(1);
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		validator.isEmptyObject = jest.fn().mockReturnValue(true);
+		validator.isValidStrings = jest.fn().mockReturnValue(false);
+		//Act
+		try{
+			await sut.getCardByUniqueKey({id: ''});
+		}catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+		
+	});
 
-
-})
+});

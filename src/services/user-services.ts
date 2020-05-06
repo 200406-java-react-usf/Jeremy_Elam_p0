@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {UserInfo} from '../models/user';
 import {UserRepository} from '../repo/user-repo';
 import {isValidId, isValidStrings, isValidObject, isPropertyOf, isEmptyObject} from '../util/validator';
@@ -14,7 +15,9 @@ export class UserService{
 	constructor(private userRepo: UserRepository){
 		this.userRepo = userRepo;
 	}
-
+	/**
+	 * sends request to server to get all users if database is empty throws error
+	 */
 	async getAllUsers(): Promise<UserInfo[]>{
 		let users = await this.userRepo.getAll();
 		if(users.length === 0){
@@ -22,7 +25,13 @@ export class UserService{
 		}
 		return users.map(this.removePassword);
 	}
-
+	/**
+	 * * checks to see if id is valid
+	 * sends request to server and waits for response
+	 * if response is empty throw error 
+	 * return user info based on id
+	 * @param id 
+	 */
 	async getUserById(id: number):Promise<UserInfo>{
 		if(!isValidId(id)){
 			throw new BadRequestError();
@@ -33,11 +42,15 @@ export class UserService{
 		}
 		return this.removePassword(user);
 	}
-
+	/**
+	 *  * check to see if key names in object is the same as property
+	 * checks to see if value is string. if string check to see if valid string, if not valid throw error
+	 * waits for server response check to see if response is empty, if empty throw error
+	 * @param queryObj 
+	 */
 	async getUserByUniqueKey(queryObj: any): Promise<UserInfo>{
 		try {
 			let queryKeys = Object.keys(queryObj);
-			console.log(queryObj);
 			
 			if(!queryKeys.every(key => isPropertyOf(key, UserInfo))){
 				throw new BadRequestError();
@@ -60,30 +73,12 @@ export class UserService{
 		}
 	}
 
-	// authenticateUser(email: string, password:string): Promise<UserInfo>{
-	// 	return new Promise<UserInfo>(async(resolve, reject)=>{
-	// 		if(!isValidStrings(email, password)){
-	// 			reject(new BadRequestError());
-	// 			return;
-	// 		}
-	// 		let authUser: UserInfo;
-	// 		try{
-	// 			authUser = await this.userRepo.getUserByCredentials(email, password);
-	// 			if(isEmptyObject(authUser)){
-	// 				throw new AuthenticationError('Bad credentials provided');
-	// 			}
-	// 			return this.removePassword(authUser);
-	// 		}catch(e){
-	// 			reject(e);
-	// 		}
-	// 		if(isEmptyObject(authUser)){
-	// 			reject(new AuthenticationError('Bad credentials provided'));
-	// 			return;
-	// 		}
-	// 		resolve(this.removePassword(authUser));
-	// 	});
-	// }
-	
+	/**
+	 *  * check to see if parameter object is valid object, if not valid throw error
+	 * check to see if user email is already in use, if email already in use throw error
+	 * if all conditions pass give data to database to update in database
+	 * @param newUser 
+	 */
 	async addNewUser(newUser:UserInfo): Promise<UserInfo>{
 		try {
 			if(!isValidObject(newUser,'id')){
@@ -100,6 +95,12 @@ export class UserService{
 			throw e;
 		}
 	}
+	/**
+	 *  * checks to see if object passed in parameter is valid, if not throw error
+	 * checks to see if id is valid id, if not throw error
+	 * delete sends request to delete user by database
+	 * @param id 
+	 */
 	async deleteUserById(id: object): Promise<boolean>{
 		let keys = Object.keys(id);
 		if(!keys.every(key=> isPropertyOf(key, UserInfo))){
@@ -115,6 +116,11 @@ export class UserService{
 
 		return true;
 	}
+	/**
+	 * * checks to see if object passed in parameters is valid, if not throw error
+	 * gives data to server to update user info
+	 * @param updateUser 
+	 */
 	async updateUser(updateUser: UserInfo):Promise<boolean>{
 		try{
 			if(!isValidObject(updateUser)){
@@ -141,17 +147,23 @@ export class UserService{
 		}
 	}
 	
-
+	/**
+	 * 
+	 * checks to see if email address is available in the database
+	 * @param email 
+	 */
 	async isEmailAvailable(email: string): Promise<boolean>{
 		try{
 			await this.getUserByUniqueKey({'user_email':email});
 		}catch(e){
-			console.log('email is available');
 			return true;
 		}
-		console.log('email is unavailable');
 		return false;
 	}
+	/**
+	 * removes password from users when user object is passed through
+	 * @param user 
+	 */
 	removePassword(user: UserInfo): UserInfo {
 		if(!user || !user.user_pw) return user;
 		let usr = {...user};

@@ -1,4 +1,3 @@
-import { UserRepository as sut, UserRepository } from '../repo/user-repo';
 import {UserService} from '../services/user-services';
 import { UserInfo } from '../models/user';
 import validator from '../util/validator';
@@ -20,7 +19,7 @@ jest.mock('../repo/user-repo', ()=>{
 		updateUser = jest.fn();
 		removePassword = jest.fn();
 		isEmailAvailable = jest.fn();
-	}
+	};
 });
 
 describe('userService', ()=>{
@@ -46,7 +45,7 @@ describe('userService', ()=>{
 				updateUser: jest.fn(),
 				removePassword: jest.fn(),
 				isEmailAvailable: jest.fn()
-			}
+			};
 		});
 		sut = new UserService(mockRepo);
 	});
@@ -97,7 +96,7 @@ describe('userService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getUserById(-1)
+			await sut.getUserById(-1);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -110,7 +109,7 @@ describe('userService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getUserById(3.14)
+			await sut.getUserById(3.14);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -123,7 +122,7 @@ describe('userService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getUserById(0)
+			await sut.getUserById(0);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -135,7 +134,7 @@ describe('userService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getUserById(NaN)
+			await sut.getUserById(NaN);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -166,7 +165,7 @@ describe('userService', ()=>{
 			});
 		});
 		//Act 
-		let result = await sut.addNewUser(new UserInfo(6, 'Pepper', 'Elam', 'pepperelam@gmail.com', 'password', 'User'))
+		let result = await sut.addNewUser(new UserInfo(6, 'Pepper', 'Elam', 'pepperelam@gmail.com', 'password', 'User'));
 		//Assert 
 		expect(result).toBeTruthy();
 		expect(mockUsers.length).toBe(6);
@@ -178,7 +177,7 @@ describe('userService', ()=>{
 		validator.isValidObject = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.addNewUser(new UserInfo(2, 'pepper', '', 'flameking0127@gmail.com', 'password', 'User'))
+			await sut.addNewUser(new UserInfo(2, 'pepper', '', 'flameking0127@gmail.com', 'password', 'User'));
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -191,7 +190,7 @@ describe('userService', ()=>{
 		sut.isEmailAvailable = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.addNewUser(new UserInfo(6, 'pepper', 'elam', 'flameking0127@gmail.com', 'password', 'User'))
+			await sut.addNewUser(new UserInfo(6, 'pepper', 'elam', 'flameking0127@gmail.com', 'password', 'User'));
 		}catch(e){
 			//Assert
 			expect(e instanceof ResourcePersistenceError).toBe(true);
@@ -205,7 +204,7 @@ describe('userService', ()=>{
 		mockRepo.deleteById = jest.fn().mockReturnValue(true);
 
 		//Act
-		let result = await sut.deleteUserById({"id":1});
+		let result = await sut.deleteUserById({'id':1});
 		//Assert 
 		expect(result).toBe(true);
 	});
@@ -217,7 +216,7 @@ describe('userService', ()=>{
 		validator.isValidId = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.deleteUserById({"id": -1});
+			await sut.deleteUserById({'id': -1});
 		}catch(e){
 			expect(e instanceof BadRequestError).toBe(true);
 		}
@@ -229,7 +228,7 @@ describe('userService', ()=>{
 		validator.isPropertyOf = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.deleteUserById({"": 1});
+			await sut.deleteUserById({'': 1});
 		}catch(e){
 			expect(e instanceof BadRequestError).toBe(true);
 		}
@@ -260,9 +259,9 @@ describe('userService', ()=>{
 		
 		sut.getUserById = jest.fn().mockImplementation((id: number)=>{
 			return new Promise<UserInfo>((resolve)=>{
-				resolve(mockUsers.find(user => user.id === id))
-			})
-		})
+				resolve(mockUsers.find(user => user.id === id));
+			});
+		});
 		mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
 			return new Promise<UserInfo> ((resolve) => {
 				resolve(mockUsers.find(user => user[key] === val));
@@ -273,11 +272,39 @@ describe('userService', ()=>{
 
 		expect(result).toBeTruthy();
 		expect(result.id).toBe(1);
+
 	});
+	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
+		//Arrange
+		expect.hasAssertions();
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		//Act
+		try{
+			await sut.getUserByUniqueKey({'somethingRandom': 1});
+		}catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+		
+	});
+	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
+		//Arrange
+		expect.hasAssertions();
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		//Act
+		try{
+			await sut.getUserByUniqueKey({'user_pw': 1});
+		}catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+		
+	});
+
+
+
 	
 	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
 		//Arrange
-		expect.assertions(1)
+		expect.assertions(1);
 		validator.isPropertyOf = jest.fn().mockReturnValue(true);
 		validator.isEmptyObject = jest.fn().mockReturnValue(true);
 		validator.isValidStrings = jest.fn().mockReturnValue(false);

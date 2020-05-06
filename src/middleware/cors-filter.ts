@@ -1,4 +1,5 @@
-import{Request, Response, response} from 'express';
+/* eslint-disable no-unused-vars */
+import{Request, Response} from 'express';
 
 export function corsFilter(req: Request, resp: Response, next){
 	resp.header('Access-Control-Allow-Origin', '*');

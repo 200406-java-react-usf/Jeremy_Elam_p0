@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { UserProfile} from '../models/profile';
 import {CrudRepository} from './crud-repo';
 import { InternalServerError} from '../errors/errors';
@@ -7,6 +8,9 @@ import {mapProfileResultSet} from '../util/result-set-mapper';
 
 export class ProfileRepository implements CrudRepository<UserProfile>{
 
+	/**
+	 * base query to obtain specific information from database
+	 */
 	baseQuery = `select 
 	profile.user_un, 
 	profile.profile_id, 
@@ -15,6 +19,9 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 	card_sets.card_set , 
 	card_info.card_name, 
 	users_info.id from profile join users_info on users_info.id =  profile.id join card_sets on card_sets.id = profile.fav_set join card_info on card_info.id = profile.fav_card`
+	/**
+	 * send requests to get all uses from database
+	 */
 	async getAll(): Promise<UserProfile[]>{
 		let client: PoolClient;
 		try{
@@ -28,6 +35,11 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 			client && client.release();
 		}
 	}
+	/**
+	 * * Retrieve all profiles from the database. 
+	 * returns internal server error is query doesn't work
+	 * @param id 
+	 */
 	async getById(id:number): Promise<UserProfile>{
 		let client: PoolClient;
 		try{
@@ -41,6 +53,13 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 			client && client.release();
 		}
 	}
+	/**
+	 *  * Saves new profile object into database
+	 * setid gets the needed id from card_set table and inserts that id into one of the values in the last query
+	 * cardId gets the needed id from card_set table and inserts that id into one of the values in the last query  
+	 * returns internal server error is query doesn't work
+	 * @param newProfile 
+	 */
 	async save(newProfile: UserProfile): Promise<UserProfile>{
 		let client: PoolClient;
 		try{
@@ -57,7 +76,11 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 			client && client.release();
 		}
 	}
-
+	/**
+	 * Retrieves all profile image from base query and turns the result
+	 * @param key 
+	 * @param val 
+	 */
 	async getProfileByUniqueKey(key: string, val:string): Promise<UserProfile>{
 		let client: PoolClient;
 		try{
@@ -71,6 +94,12 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 			client && client.release();
 		}
 	}
+	/**
+	 * 	 * update user information inside database.
+		 * setId gets the id needed to update table
+		 * cardId get the id needed to update table
+	* @param updateProfile 
+	*/
 	async update(updateProfile: UserProfile): Promise<boolean>{
 		let client: PoolClient;
 		try{
@@ -87,6 +116,10 @@ export class ProfileRepository implements CrudRepository<UserProfile>{
 			client && client.release();
 		}
 	}
+	/**
+	 * delete user when given an id number
+	 * @param id 
+	 */
 	async deleteById(id: number): Promise<boolean>{
 		let client: PoolClient;
 		try{

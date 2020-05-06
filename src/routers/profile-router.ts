@@ -1,10 +1,9 @@
+/* eslint-disable no-unused-vars */
 import url from 'url';
 import express from 'express';
 import AppConfig from '../config/app';
 import {isEmptyObject} from '../util/validator';
 import { ParsedUrlQuery} from 'querystring';
-import { CardService } from '../services/card-service';
-import { CardRouter } from './card-router';
 
 export const ProfileRouter = express.Router();
 
@@ -32,7 +31,7 @@ ProfileRouter.get('/:id', async(req, resp) =>{
 	}catch(e){
 		return resp.status(e.statusCode).json(e);
 	}
-})
+});
 
 ProfileRouter.post('', async(req, resp)=>{
 	try{
@@ -59,5 +58,5 @@ ProfileRouter.delete('', async(req, resp)=>{
 	}catch(e){
 		return resp.status(e.statusCode).json(e);
 	}
-})
+});
 

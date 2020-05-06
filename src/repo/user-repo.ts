@@ -1,19 +1,24 @@
+/* eslint-disable no-unused-vars */
 import { UserInfo } from '../models/user';
 import { CrudRepository } from './crud-repo';
 import {
 	InternalServerError
 } from '../errors/errors';
-import validator from '../util/validator';
 import {PoolClient} from 'pg';
 import {connectionPool} from '..';
 import {mapUserResultSet} from '../util/result-set-mapper';
 
 export class UserRepository implements CrudRepository<UserInfo> {
-	
+	/**
+	 * base query to connect to database to the specific information that is needed 
+	 */
 	baseQuery = `select users_info.id, user_fn , user_ln , user_email ,user_pw, name
 	from users_info
 	left join user_roles 
 	on users_info.role = user_roles.id`;
+	/**
+	 * Retreive all users from the database. 
+	 */
 	async getAll(): Promise<UserInfo[]> {
 		let client: PoolClient;
 		try{
@@ -28,6 +33,10 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		}
 		
 	}
+	/**
+	* Retrieves one users from the database based off their Id 
+	* @param id 
+	*/
 	async getById(id:number): Promise<UserInfo>{
 		let client: PoolClient;
 		try{
@@ -42,7 +51,10 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		}
 	}
 	
-
+	/**
+	 *  * save new use object to database
+	 * @param newUser 
+	 */
 	async save(newUser: UserInfo): Promise<UserInfo>{
 		let client: PoolClient;
 		try{
@@ -60,7 +72,11 @@ export class UserRepository implements CrudRepository<UserInfo> {
 			client && client.release();
 		}
 	}
-
+	/**
+	 * 	 * Retrieves user information based off unique key 
+	 * @param key 
+	 * @param val 
+	 */
 	async getUserByUniqueKey(key: string, val: string):Promise<UserInfo>{
 		let client: PoolClient;
 		try{
@@ -74,6 +90,11 @@ export class UserRepository implements CrudRepository<UserInfo> {
 			client && client.release();
 		}
 	}
+	/**
+	 * Retrieve user information based off email address and password 
+	 * @param email 
+	 * @param password 
+	 */
 	async getUserByCredentials(email: string, password: string):Promise<UserInfo>{
 		let client: PoolClient;
 		try{
@@ -88,6 +109,12 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		}
 	}
 
+	/**
+	 *  * Update current user information
+	 * checks to see if update email will be the same for the same use
+	 * will not update if email address is being used by different users
+	 * @param updatedUser 
+	 */
 	async update(updatedUser: UserInfo): Promise<boolean> {
 	
 		let client: PoolClient;
@@ -105,6 +132,10 @@ export class UserRepository implements CrudRepository<UserInfo> {
 		}
 	}
 	
+	/**
+	 *  * Delete user in database based off their Id
+	 * @param id 
+	 */
 	async deleteById(id:number): Promise<boolean>{
 		let client: PoolClient;
 		try{

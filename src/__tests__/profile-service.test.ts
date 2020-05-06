@@ -15,7 +15,7 @@ jest.mock('../repo/profile-repo', ()=>{
 		getProfileByUniqueKey = jest.fn();
 		update = jest.fn();
 		deleteById = jest.fn();
-	}
+	};
 });
 
 describe('profileService', ()=>{
@@ -40,7 +40,7 @@ describe('profileService', ()=>{
 				save: jest.fn(),
 				update:jest.fn(),
 				deleteById: jest.fn()
-			}
+			};
 		});
 		sut = new ProfileService(mockRepo);
 	});
@@ -81,7 +81,7 @@ describe('profileService', ()=>{
 		//Assert
 		expect(result).toBeTruthy();
 		expect(result.user_un).toBe('lazyspell');
-		expect(result.fav_archetypes).toBe('bant')
+		expect(result.fav_archetypes).toBe('bant');
 	});
 	test('should throw bad request error when given an invalid id number (negative)', async()=>{
 		//Arrange
@@ -89,7 +89,7 @@ describe('profileService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getProfileById(-1)
+			await sut.getProfileById(-1);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -101,7 +101,7 @@ describe('profileService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getProfileById(3.14)
+			await sut.getProfileById(3.14);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -114,7 +114,7 @@ describe('profileService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getProfileById(0)
+			await sut.getProfileById(0);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -126,7 +126,7 @@ describe('profileService', ()=>{
 		mockRepo.getById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.getProfileById(NaN)
+			await sut.getProfileById(NaN);
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -157,7 +157,7 @@ describe('profileService', ()=>{
 			});
 		});
 		//Act 
-		let result = await sut.addNewProfile(new UserProfile('lazyspell', 6,'bant', 'green', 'WAR', 'Nissa', 6))
+		let result = await sut.addNewProfile(new UserProfile('lazyspell', 6,'bant', 'green', 'WAR', 'Nissa', 6));
 		//Assert 
 		expect(result).toBeTruthy();
 		expect(mockProfiles.length).toBe(6);
@@ -169,7 +169,7 @@ describe('profileService', ()=>{
 		validator.isValidObject = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.addNewProfile(new UserProfile('lazyspell', 6,'', 'green', 'WAR', 'Nissa', 6))
+			await sut.addNewProfile(new UserProfile('lazyspell', 6,'', 'green', 'WAR', 'Nissa', 6));
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -183,7 +183,7 @@ describe('profileService', ()=>{
 		sut.isUserInfoAvailable = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.addNewProfile(new UserProfile('lazyspell', 6,'', 'green', 'WAR', 'Nissa', 5))
+			await sut.addNewProfile(new UserProfile('lazyspell', 6,'', 'green', 'WAR', 'Nissa', 5));
 		}catch(e){
 			//Assert
 			expect(e instanceof ResourcePersistenceError).toBe(false);
@@ -195,7 +195,7 @@ describe('profileService', ()=>{
 		validator.isValidObject = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.addNewProfile(new UserProfile('lazyspell', 6,'', 'green', '', 'Nissa', 5))
+			await sut.addNewProfile(new UserProfile('lazyspell', 6,'', 'green', '', 'Nissa', 5));
 		}catch(e){
 			//Assert
 			expect(e instanceof BadRequestError).toBe(true);
@@ -209,7 +209,7 @@ describe('profileService', ()=>{
 		mockRepo.deleteById = jest.fn().mockReturnValue(true);
 
 		//Act
-		let result = await sut.deleteProfileById({"id":1});
+		let result = await sut.deleteProfileById({'id':1});
 		//Assert 
 		expect(result).toBe(true);
 	});
@@ -220,7 +220,7 @@ describe('profileService', ()=>{
 		validator.isValidId = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.deleteProfileById({"id": -1});
+			await sut.deleteProfileById({'id': -1});
 		}catch(e){
 			expect(e instanceof BadRequestError).toBe(true);
 		}
@@ -231,14 +231,14 @@ describe('profileService', ()=>{
 		validator.isPropertyOf = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.deleteProfileById({"": 1});
+			await sut.deleteProfileById({'': 1});
 		}catch(e){
 			expect(e instanceof BadRequestError).toBe(true);
 		}
 	});
 	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
 		//Arrange
-		expect.assertions(1)
+		expect.assertions(1);
 		validator.isPropertyOf = jest.fn().mockReturnValue(true);
 		validator.isEmptyObject = jest.fn().mockReturnValue(true);
 		validator.isValidStrings = jest.fn().mockReturnValue(false);
@@ -260,9 +260,9 @@ describe('profileService', ()=>{
 		
 		sut.getProfileById = jest.fn().mockImplementation((id: number)=>{
 			return new Promise<UserProfile>((resolve)=>{
-				resolve(mockProfiles.find(user => user.id === id))
-			})
-		})
+				resolve(mockProfiles.find(user => user.id === id));
+			});
+		});
 		mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
 			return new Promise<UserProfile> ((resolve) => {
 				resolve(mockProfiles.find(user => user[key] === val));
@@ -277,66 +277,116 @@ describe('profileService', ()=>{
 
 	test('should return ResourceNotFoundError when given a value for getByUniqueKey that does not exist', async () => {
 
-        expect.assertions(1);
+		expect.assertions(1);
 
-        validator.isPropertyOf = jest.fn().mockReturnValue(true);
-        validator.isEmptyObject = jest.fn().mockReturnValue(true);
-        validator.isValidStrings = jest.fn().mockReturnValue(false);
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		validator.isEmptyObject = jest.fn().mockReturnValue(true);
+		validator.isValidStrings = jest.fn().mockReturnValue(false);
 
-        mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
-            return new Promise<UserProfile> ((resolve) => {
+		mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
+			return new Promise<UserProfile> ((resolve) => {
 				resolve(mockProfiles.find(user => user[key] === val));
-            });
-        });
+			});
+		});
 
-        try{
-            await sut.getProfileByUniqueKey({user_un: ''});
-        } catch(e){
-            expect(e instanceof BadRequestError).toBe(true);
-        }
+		try{
+			await sut.getProfileByUniqueKey({user_un: ''});
+		} catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
 
 	});
 	test('should return ResourceNotFoundError when given a value for getByUniqueKey that does not exist', async () => {
 
-        expect.assertions(1);
+		expect.assertions(1);
 
-        validator.isPropertyOf = jest.fn().mockReturnValue(true);
-        validator.isEmptyObject = jest.fn().mockReturnValue(false);
-        validator.isValidStrings = jest.fn().mockReturnValue(true);
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		validator.isEmptyObject = jest.fn().mockReturnValue(false);
+		validator.isValidStrings = jest.fn().mockReturnValue(true);
 
-        mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
-            return new Promise<UserProfile> ((resolve) => {
+		mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
+			return new Promise<UserProfile> ((resolve) => {
 				resolve(mockProfiles.find(user => user[key] === val));
-            });
-        });
+			});
+		});
 
-        try{
-            await sut.getProfileByUniqueKey({user_un: ''});
-        } catch(e){
-            expect(e instanceof BadRequestError).toBe(true);
-        }
+		try{
+			await sut.getProfileByUniqueKey({user_un: ''});
+		} catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
 
 	});
 	test('should return ResourceNotFoundError when given a value for getByUniqueKey that does not exist', async () => {
 
-        expect.assertions(1);
+		expect.assertions(1);
 
-        validator.isPropertyOf = jest.fn().mockReturnValue(false);
-        validator.isEmptyObject = jest.fn().mockReturnValue(true);
-        validator.isValidStrings = jest.fn().mockReturnValue(true);
+		validator.isPropertyOf = jest.fn().mockReturnValue(false);
+		validator.isEmptyObject = jest.fn().mockReturnValue(true);
+		validator.isValidStrings = jest.fn().mockReturnValue(true);
 
-        mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
-            return new Promise<UserProfile> ((resolve) => {
+		mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
+			return new Promise<UserProfile> ((resolve) => {
 				resolve(mockProfiles.find(user => user[key] === val));
-            });
-        });
+			});
+		});
 
-        try{
-            await sut.getProfileByUniqueKey({user_username: 'lazyspell'});
-        } catch(e){
-            expect(e instanceof BadRequestError).toBe(true);
-        }
+		try{
+			await sut.getProfileByUniqueKey({user_username: 'lazyspell'});
+		} catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+
+	});
+	test('should return correct user when given correct key and value for getByUniqueKey', async () => {
+
+		expect.assertions(2);
+
+		validator.isPropertyOf = jest.fn().mockReturnValue(true);
+		validator.isEmptyObject = jest.fn().mockReturnValue(true);
+		validator.isValidStrings = jest.fn().mockReturnValue(true);
+		
+		sut.getProfileById = jest.fn().mockImplementation((id: number)=>{
+			return new Promise<UserProfile>((resolve)=>{
+				resolve(mockProfiles.find(user => user.id === id));
+			});
+		});
+		mockRepo.getUserByUniqueKey = jest.fn().mockImplementation((key: string, val: string) => {
+			return new Promise<UserProfile> ((resolve) => {
+				resolve(mockProfiles.find(user => user[key] === val));
+			});
+		});
+
+		let result = await sut.getProfileByUniqueKey({id: 1});
+
+		expect(result).toBeTruthy();
+		expect(result.id).toBe(1);
 
 	});
 
-})
+	test('should return BadRequestError when trying to delete an id but given an invalid object', async ()=>{
+		//Arrange
+		expect.hasAssertions();
+		validator.isValidObject = jest.fn().mockReturnValue(true);
+		//Act
+		try{
+			await sut.updatedProfile(new UserProfile('', 1, '', 'green', 'none', 'none', 1));
+		}catch(e){
+			expect(e instanceof BadRequestError).toBe(true);
+		}
+		
+	});
+	test('should return ResourceNotFoundError a key value is given out of the scope of the data', async ()=>{
+		//Arrange
+		expect.hasAssertions();
+		mockRepo.getProfileByUniqueKey = jest.fn().mockReturnValue([]);
+		//Act
+		try{
+			await sut.getProfileByUniqueKey({user_un:'lazyspell'});
+		}catch(e){
+			expect(e instanceof ResourceNotFoundError).toBe(true);
+		}
+		
+	});
+	
+});

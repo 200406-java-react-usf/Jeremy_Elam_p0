@@ -4,18 +4,19 @@ import * as mockMapper from '../util/result-set-mapper';
 import {UserInfo} from '../models/user';
 
 
+
 jest.mock('..',()=>{
 	return {
 		connectionPool: {
 			connect: jest.fn()
 		}
-	}
+	};
 });
 
 jest.mock('../util/result-set-mapper', ()=>{
 	return {
 		mapUserResultSet: jest.fn()
-	}
+	};
 });
 
 describe('userRepo', ()=>{
@@ -24,25 +25,25 @@ describe('userRepo', ()=>{
 
 	beforeEach(()=>{
 		(mockConnect as jest.Mock).mockClear().mockImplementation(() => {
-            return {
-                query: jest.fn().mockImplementation(() => {
-                    return {
-                        rows: [
-                            {
-                                id: 1,
-                                user_fn: 'kevin',
-                                user_ln: 'wagenheim',
-                                user_email: 'wagenheimk@gmail.com',
-                                user_pw: 'secretpassword',
+			return {
+				query: jest.fn().mockImplementation(() => {
+					return {
+						rows: [
+							{
+								id: 1,
+								user_fn: 'kevin',
+								user_ln: 'wagenheim',
+								user_email: 'wagenheimk@gmail.com',
+								user_pw: 'secretpassword',
 								name: 'Admin'
 							}	
-                        ]
-                    }
-                }), 
-                release: jest.fn()
-            }
-        });
-        (mockMapper.mapUserResultSet as jest.Mock).mockClear();
+						]
+					};
+				}), 
+				release: jest.fn()
+			};
+		});
+		(mockMapper.mapUserResultSet as jest.Mock).mockClear();
 	});
 
 	test('should resolve to an array of User when getAll retrieves records from data source', async ()=>{
@@ -63,9 +64,9 @@ describe('userRepo', ()=>{
 		expect.hasAssertions();
 		(mockConnect as jest.Mock).mockImplementation(() => {
 			return {
-				query: jest.fn().mockImplementation(() => { return { rows: [] } }), 
+				query: jest.fn().mockImplementation(() => { return { rows: [] }; }), 
 				release: jest.fn()
-			}
+			};
 		});
 		// Act
 		let result = await sut.getAll();
@@ -76,15 +77,15 @@ describe('userRepo', ()=>{
 		expect(mockConnect).toBeCalledTimes(1);
 	});
 	test('should resolve to a User object when getById retrieves a record from data source', async () => {
-        // Arrange
-        expect.hasAssertions();
-        let mockUser = new UserInfo(1, 'un', 'pw', 'fn', 'ln', 'email');
-        (mockMapper.mapUserResultSet as jest.Mock).mockReturnValue(mockUser);
-        // Act
-        let result = await sut.getById(1);
-        // Assert
-        expect(result).toBeTruthy();
-        expect(result instanceof UserInfo).toBe(true);
+		// Arrange
+		expect.hasAssertions();
+		let mockUser = new UserInfo(1, 'un', 'pw', 'fn', 'ln', 'email');
+		(mockMapper.mapUserResultSet as jest.Mock).mockReturnValue(mockUser);
+		// Act
+		let result = await sut.getById(1);
+		// Assert
+		expect(result).toBeTruthy();
+		expect(result instanceof UserInfo).toBe(true);
 	});
 	
 	test('should return a newUser when save successfully completes', async ()=>{
@@ -113,25 +114,24 @@ describe('userRepo', ()=>{
 		let result = await sut.deleteById(mockUser.id);
 		//Assert
 		expect(result).toBeTruthy();
-	})
+	});
 	test('should return true when a users is successfully deleted by the user', async()=>{
 		//Arrange
 		expect.hasAssertions();
-		let mockUser = new UserInfo(1,'salt','elam', 'saltelam@gmail.com','password','User');
 		//Act
-		let result = await sut.getUserByUniqueKey("user_fn", 'kevin');
+		let result = await sut.getUserByUniqueKey('user_fn', 'kevin');
 		//Assert
 		expect(result).toBeTruthy();
-	})
+	});
 
 	test('should return true when a users is successfully deleted by the user', async()=>{
 		//Arrange
 		expect.hasAssertions();
 		// let mockUser = new UserInfo(1,'salt','elam', 'saltelam@gmail.com','password','User');
 		//Act
-		let result = await sut.getUserByCredentials("email", "password");
+		let result = await sut.getUserByCredentials('email', 'password');
 		//Assert
 		expect(result).toBeTruthy();
-	})
+	});
 	
 });
