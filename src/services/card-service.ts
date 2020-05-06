@@ -48,30 +48,28 @@ export class CardService{
 	 * @param queryObj 
 	 */
 	async getCardByUniqueKey(queryObj: any): Promise<Cards>{
-		try{
-			let queryKeys = Object.keys(queryObj);
+		
+		let queryKeys = Object.keys(queryObj);
 			
-			if(!queryKeys.every(key => isPropertyOf(key, Cards))){
-				throw new BadRequestError();
-			}
-			
-			let key = queryKeys[0];
-			let val = queryObj[key];
-			if(key === 'id'){
-				return await this.getCardById(+val);
-			}
-			
-			if(!isValidStrings(val)){
-				throw new BadRequestError();
-			}
-			let card = await this.cardRepo.getCardByUniqueKey(key, val);
-			if(isEmptyObject(card)){
-				throw new ResourceNotFoundError();
-			}
-			return card;
-		}catch (e){
-			throw e;
+		if(!queryKeys.every(key => isPropertyOf(key, Cards))){
+			throw new BadRequestError();
 		}
+			
+		let key = queryKeys[0];
+		let val = queryObj[key];
+		if(key === 'id'){
+			return await this.getCardById(+val);
+		}
+			
+		if(!isValidStrings(val)){
+			throw new BadRequestError();
+		}
+		let card = await this.cardRepo.getCardByUniqueKey(key, val);
+		if(isEmptyObject(card)){
+			throw new ResourceNotFoundError();
+		}
+		return card;
+		
 	}
 	/**
 	 *  * checks to see if object passed through is a valid object
@@ -79,23 +77,21 @@ export class CardService{
 	 * @param newCard 
 	 */
 	async addNewCard(newCard: Cards): Promise<Cards>{
-		try{
-			if(!isValidObject(newCard, 'id')){
-				throw new BadRequestError('Invalid property values found in provided user.');
-			}
-			let cardNameAvailable = await this.isCardNameAvailable(newCard.card_name);
-			
-			if(!cardNameAvailable){
-				throw new ResourcePersistenceError('The provided card name is already in use.');
-			}
-			
-			const persistedCard = await this.cardRepo.save(newCard);
-			
-
-			return persistedCard;
-		}catch(e){
-			throw e;
+		
+		if(!isValidObject(newCard, 'id')){
+			throw new BadRequestError('Invalid property values found in provided user.');
 		}
+		let cardNameAvailable = await this.isCardNameAvailable(newCard.card_name);
+		
+		if(!cardNameAvailable){
+			throw new ResourcePersistenceError('The provided card name is already in use.');
+		}
+		
+		const persistedCard = await this.cardRepo.save(newCard);
+		
+
+		return persistedCard;
+
 	}
 	/**
 	 *  * check to see if object is valid if not throw error
@@ -104,18 +100,16 @@ export class CardService{
 	 * @param updateCard 
 	 */
 	async updateCard(updateCard: Cards): Promise<boolean>{
-		try{
-			if(!isValidObject(updateCard)){
-				throw new BadRequestError();
-			}
-			let cardNameAvailable = await this.isCardNameAvailable(updateCard.card_name);
-			if(!cardNameAvailable){
-				throw new ResourcePersistenceError();
-			}
-			return await this.cardRepo.update(updateCard);
-		}catch(e){
-			throw e;
+		
+		if(!isValidObject(updateCard)){
+			throw new BadRequestError();
 		}
+		let cardNameAvailable = await this.isCardNameAvailable(updateCard.card_name);
+		if(!cardNameAvailable){
+			throw new ResourcePersistenceError();
+		}
+		return await this.cardRepo.update(updateCard);
+		
 	}
 	/**
 	 *  * check to see if id is valid if not throw error

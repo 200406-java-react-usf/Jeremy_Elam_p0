@@ -49,28 +49,26 @@ export class UserService{
 	 * @param queryObj 
 	 */
 	async getUserByUniqueKey(queryObj: any): Promise<UserInfo>{
-		try {
-			let queryKeys = Object.keys(queryObj);
-			
-			if(!queryKeys.every(key => isPropertyOf(key, UserInfo))){
-				throw new BadRequestError();
-			}
-			let key = queryKeys[0];
-			let val = queryObj[key];
-			if(key === 'id'){
-				return await this.getUserById(+val);
-			}
-			if(!isValidStrings(val)){
-				throw new BadRequestError();
-			}
-			let user = await this.userRepo.getUserByUniqueKey(key, val);
-			if(isEmptyObject(user)){
-				throw new ResourceNotFoundError();
-			}
-			return this.removePassword(user);
-		}catch (e){
-			throw e;
+		
+		let queryKeys = Object.keys(queryObj);
+		
+		if(!queryKeys.every(key => isPropertyOf(key, UserInfo))){
+			throw new BadRequestError();
 		}
+		let key = queryKeys[0];
+		let val = queryObj[key];
+		if(key === 'id'){
+			return await this.getUserById(+val);
+		}
+		if(!isValidStrings(val)){
+			throw new BadRequestError();
+		}
+		let user = await this.userRepo.getUserByUniqueKey(key, val);
+		if(isEmptyObject(user)){
+			throw new ResourceNotFoundError();
+		}
+		return this.removePassword(user);
+		
 	}
 
 	/**
@@ -80,20 +78,18 @@ export class UserService{
 	 * @param newUser 
 	 */
 	async addNewUser(newUser:UserInfo): Promise<UserInfo>{
-		try {
-			if(!isValidObject(newUser,'id')){
-				throw new BadRequestError('Invalid property values fround in provided user.');
-			}
-			let emailAvailable = await this.isEmailAvailable(newUser.user_email);
-			if(!emailAvailable){
-				throw new ResourcePersistenceError('The provided email is already in use.');
-			}
-			newUser.role = 'User';
-			const persistedUser = await this.userRepo.save(newUser);
-			return this.removePassword(persistedUser);
-		}catch (e) {
-			throw e;
+		
+		if(!isValidObject(newUser,'id')){
+			throw new BadRequestError('Invalid property values fround in provided user.');
 		}
+		let emailAvailable = await this.isEmailAvailable(newUser.user_email);
+		if(!emailAvailable){
+			throw new ResourcePersistenceError('The provided email is already in use.');
+		}
+		newUser.role = 'User';
+		const persistedUser = await this.userRepo.save(newUser);
+		return this.removePassword(persistedUser);
+		
 	}
 	/**
 	 *  * checks to see if object passed in parameter is valid, if not throw error

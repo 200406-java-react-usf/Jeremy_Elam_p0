@@ -51,27 +51,25 @@ export class ProfileService{
 	 * @param queryObj 
 	 */
 	async getProfileByUniqueKey(queryObj: any): Promise<UserProfile>{
-		try{
-			let queryKeys = Object.keys(queryObj);
-			if(!queryKeys.every(key => isPropertyOf(key, UserProfile))){
-				throw new BadRequestError();
-			}
-			let key = queryKeys[0];
-			let val = queryObj[key];
-			if(key === 'id'){
-				return await this.getProfileById(+val);
-			}
-			if(!isValidStrings(val)){
-				throw new BadRequestError();
-			}
-			let profile = await this.profileRepo.getProfileByUniqueKey(key,val);
-			if(isEmptyObject(profile)){
-				throw new ResourceNotFoundError();
-			}
-			return profile;
-		}catch(e){
-			throw e;
+		
+		let queryKeys = Object.keys(queryObj);
+		if(!queryKeys.every(key => isPropertyOf(key, UserProfile))){
+			throw new BadRequestError();
 		}
+		let key = queryKeys[0];
+		let val = queryObj[key];
+		if(key === 'id'){
+			return await this.getProfileById(+val);
+		}
+		if(!isValidStrings(val)){
+			throw new BadRequestError();
+		}
+		let profile = await this.profileRepo.getProfileByUniqueKey(key,val);
+		if(isEmptyObject(profile)){
+			throw new ResourceNotFoundError();
+		}
+		return profile;
+	
 	}
 	
 	/**
@@ -81,19 +79,17 @@ export class ProfileService{
 	 * @param newProfile 
 	 */
 	async addNewProfile(newProfile:UserProfile): Promise<UserProfile>{
-		try{
-			if(!isValidObject(newProfile,'id')){
-				throw new BadRequestError('Invalid property values found in provided user.');
-			}
-			let userInfoAvailable = await this.isUserInfoAvailable(newProfile.id);
-			if(!userInfoAvailable){
-				throw new ResourcePersistenceError('The provided user info is already connected to another profile');
-			}
-			const persistedProfile = await this.profileRepo.save(newProfile);
-			return persistedProfile;
-		}catch(e){
-			throw e;
+	
+		if(!isValidObject(newProfile,'id')){
+			throw new BadRequestError('Invalid property values found in provided user.');
 		}
+		let userInfoAvailable = await this.isUserInfoAvailable(newProfile.id);
+		if(!userInfoAvailable){
+			throw new ResourcePersistenceError('The provided user info is already connected to another profile');
+		}
+		const persistedProfile = await this.profileRepo.save(newProfile);
+		return persistedProfile;
+		
 	}
 	
 	/**
@@ -102,14 +98,12 @@ export class ProfileService{
 	 * @param updatedProfile 
 	 */
 	async updatedProfile(updatedProfile: UserProfile): Promise<boolean>{
-		try{
-			if(!isValidObject(updatedProfile)){
-				throw new BadRequestError();
-			}
-			return await this.profileRepo.update(updatedProfile);
-		}catch(e){
-			throw e;
+		
+		if(!isValidObject(updatedProfile)){
+			throw new BadRequestError();
 		}
+		return await this.profileRepo.update(updatedProfile);
+	
 	}
 
 	/**
